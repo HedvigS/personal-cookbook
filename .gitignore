@@ -1,3 +1,6 @@
 #mac things
 .DS_Store
+
+#R things
 *Rproj*
+*Rhistory*
