@@ -24,4 +24,4 @@ There are seven scripts:
 To note
 * these scripts are meant to be helpful examples, not all purpose code. Copy and adapt if you need these things. I'm not at this stage adapting this to more general functions in a CRAN package
 * `python/create_tree_bottom_up.py` relies on there being glottolog data in the style of glottolog/glottolog (either clone or Zenodo version). I prefer Zenodo to glottolog/glottolog since it is a particular version whereas glottolog/glottolog is an ongoing curated dataset
-* the R scripts rely on cldf-formatted data and fetch files directly from the web version of glottolog/glottolog-cldf. There are disadvantages and advantages with this. Take what you find useful from these scripts.
+* the R scripts rely on cldf-formatted data and fetch files directly from the web version of glottolog/glottolog-cldf. There are disadvantages and advantages with this. Take what you find useful from these scripts. Let me know if something is blatantly going wrong.
