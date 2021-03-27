@@ -15,7 +15,7 @@ There are seven scripts:
 
 * `python/create_tree_bottom_up.py` is a short script which takes a list of glottocodes for a given family in glottolog and outputs the subtree which contains all of those glottocodes as tips and no other 
 * `R/Worldmap_plotting.R` is a longer script which plots points on a pacific-centered worldmap. It is exemplified with langoids from glottolog as points colored for MED or Family_ID, but can be adaopted for other purposes 
-* `R/make_lang_values_wide_fetch_online.R` fetches the language and values tables from glottolog/glottolog-cldf and combines them and makes them wide.
+* `R/make_lang_values_wide_fetch_online.R` fetches the language and values tables from the web([glottolog/glottolog-cldf](https://github.com/glottolog/glottolog-cldf)) and combines them and makes them wide.
 * `R/make_lang_values_wide_local_clone.R` does almost exactly the same thing as the script above, except it relies on a local clone of a cldf-repos and makes use of [Simon Greenhill's package rcldf](https://github.com/SimonGreenhill/rcldf)
 * `R/Counting_language_names.R` filters the languages and values tables to only "real" languages and counts the words in their names
 * `R/stripping_names_to_ascii.R` strips the items in "Name" to two other columsn: one with just ascii and one where spaces have been replaced with "_"
