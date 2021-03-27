@@ -7,7 +7,7 @@ This is a collection of code (Python and R) which I use for particular purposes 
 * make cldf data tables languages and values wide
 * exclude language-languoids that aren't languages per se (aren't distinct from all other languages and haven't been used as main communication for a human society) and count the words (strings separated by spaces) in their names
 
-To that end, there are three scripts:
+To that end, there are four scripts:
 
 * `python/create_tree_bottom_up.py` is a short script which takes a list of glottocodes for a given family in glottolog and outputs the subtree which contains all of those glottocodes as tips and no other 
 * `R/Worldmap_plotting.R` is a longer script which plots points on a pacific-centered worldmap. It is exemplified with langoids from glottolog as points colored for MED or Family_ID, but can be adaopted for other purposes 
