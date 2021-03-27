@@ -34,6 +34,6 @@ if(str_detect(cldf_folder, "glottolog")) {
 } else{  languages <- languages %>% 
   rename(Language_ID = ID)}
 
-cldf_wide_df <- dplyr::full_join(values,languages) 
+cldf_wide_df <- dplyr::inner_join(values,languages) 
 
 write_tsv(cldf_wide_df, "cldf_wide_df.tsv")
