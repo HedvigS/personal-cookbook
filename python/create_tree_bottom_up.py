@@ -8,6 +8,8 @@
 
 #list of tips needs to have the relevant glottocodes as its first column
 
+#this code is based on Forkel's example here https://github.com/glottolog/pyglottolog/issues/35#issuecomment-631415798
+
 from pyglottolog import Glottolog 
 import newick
 import pandas
