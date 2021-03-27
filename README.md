@@ -1,4 +1,4 @@
-# cldf-cookbook
+# Hedvig's personal cldf-cookbook
 
 This is a collection of code (Python and R) which I use for particular purposes related to glottolog and cldf-data:
 
