@@ -16,6 +16,10 @@ cldf_github_folder <- "https://raw.githubusercontent.com/glottolog/glottolog-cld
 
 cldf_json <- jsonlite::read_json(paste0(cldf_github_folder, "cldf-metadata.json"))
 
+
+#creating a folder for outputting tables
+if (!dir.exists("output_tables")) { dir.create("output_tables") }
+
 #finding the fileanme for the relevant tables by checking which of the tables entered into the json meta data file conforms to a given cldf-standard and pulling the filename from there
 
 index <- 0
@@ -62,4 +66,5 @@ if(str_detect(cldf_github_folder, "glottolog")) {
 
 cldf_wide_df <- dplyr::full_join(values,languages) 
 
-write_tsv(cldf_wide_df, "cldf_wide_df.tsv")
+write_tsv(cldf_wide_df, "output_tables/cldf_wide_df.tsv")
+

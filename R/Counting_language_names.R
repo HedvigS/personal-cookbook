@@ -27,4 +27,4 @@ glottolog %>%
   group_by(Name_split) %>% #grouping by words
   summarise(n = n()) %>% #counting freq of words
   arrange(desc(n)) %>% #ordering list from most frequent to least
-  write_tsv("Glottolog_name_freq.tsv")
+  write_tsv("output_tables/Glottolog_name_freq.tsv")

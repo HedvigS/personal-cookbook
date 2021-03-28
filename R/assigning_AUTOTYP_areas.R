@@ -70,4 +70,4 @@ glottolog_df_with_AUTOTYP <- df_matched_up %>%
   rename(AUTOTYP_area = Area) 
 
 glottolog_df_with_AUTOTYP %>% 
-  write_tsv("glottolog_AUTOTYPE_areas.tsv")
+  write_tsv("output_tables/glottolog_AUTOTYPE_areas.tsv")

@@ -29,4 +29,4 @@ glottolog$Name_stripped_no_spaces <- glottolog$Name_stripped %>%
 
 glottolog %>% 
   dplyr::select(Language_ID, Name, Name_stripped, Name_stripped_no_spaces) %>% 
-  write_tsv("glottolog_names_stripped.tsv")
+  write_tsv("output_tables/glottolog_names_stripped.tsv")

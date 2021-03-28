@@ -21,4 +21,4 @@ glottolog %>%
   filter(Family_ID != 'pidg1258') %>% #removing pidgins
   filter(Family_ID != 'arti1236') %>% #removing artifical
   filter(Family_ID != 'spee1234')  %>% #removing speech register
-  write_tsv("Glottolog_real_languages.tsv")
+  write_tsv("output_tables/Glottolog_real_languages.tsv")
