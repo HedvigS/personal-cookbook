@@ -2,6 +2,9 @@
 
 #This script defines a function and then applies it at the end either to something that's hardcoded in or to the first argument after the call of the script defined in CLI.
 
+#If you already have a specific file in mind, you can hardcoded it in here. If you don't but choose the CLI path, don't worry it won't be used if you've given an argument in CLI.
+fn_hardcoded <- "output_tables/cldf_wide_df.tsv"
+
 creating_stripped_name_cols <- function(df){
 
 #installing and loading packages
@@ -39,10 +42,10 @@ args = commandArgs(trailingOnly=TRUE)
 
 if (length(args)==0) {
 #  source("make_lang_values_wide_fetch_online.R")
-  fn <- "output_tables/cldf_wide_df.tsv"
-  df <- read.delim(fn, sep = '\t')
+  df <- read.delim(fn_hardcoded, sep = '\t')
   creating_stripped_name_cols(df)
 } else if (length(args)==1) {
+  #there is only one argument that matters, the file path to a df that has at least a Language_ID and Name col and is in tsv format
   df <-  read.delim(args[1], sep = '\t',)
   creating_stripped_name_cols(df)
 }
