@@ -30,20 +30,19 @@ df$Name_stripped <- df$Name %>%
 df$Name_stripped_no_spaces <- df$Name_stripped %>% 
   str_replace_all(" ", "_")  
 
-fn_out_name <- paste0(df, "_names.stripped.tsv")
-
 df %>% 
   dplyr::select(Language_ID, Name, Name_stripped, Name_stripped_no_spaces) %>% 
-  write_tsv(fn_out_name)
+  write_tsv("table_names.stripped.tsv")
 }
 
 args = commandArgs(trailingOnly=TRUE)
 
 if (length(args)==0) {
 #  source("make_lang_values_wide_fetch_online.R")
-  df <- read_tsv("output_tables/cldf_wide_df.tsv")
+  fn <- "output_tables/cldf_wide_df.tsv"
+  df <- read.delim(fn, sep = '\t')
   creating_stripped_name_cols(df)
 } else if (length(args)==1) {
-  df <- args[1] 
+  df <-  read.delim(args[1], sep = '\t',)
   creating_stripped_name_cols(df)
 }
