@@ -1,6 +1,9 @@
 #This script takes the values and languages tables from a cldf-release and combines then and transforms them to a wide data format from a long. It does not take into account the parameter or code tables.
 
-#you need to set cldf_folder folder to wherever the clone of the cldf dataset you want to widen is
+#you need to set cldf_folder folder to wherever the clone of the cldf dataset you want to widen is. 
+
+#IMPORTANT NOTE
+# There is some sort of kink in the way rcldf() is wrangling the values table such that aligmnet is going wrong and two sources are mucking up the columns and rows. For this reason, I'm inner-joining the two datasetes rather than full join. See log of error here: https://github.com/SimonGreenhill/rcldf/issues/11
 
 if (!suppressPackageStartupMessages(require("pacman"))) { install.packages("pacman") } #if pacman isn't already installed, install it.
 
