@@ -14,6 +14,9 @@ creating_stripped_name_cols <- function(df){
 #installing and loading packages
 if (!suppressPackageStartupMessages(require("pacman"))) { install.packages("pacman") } #if pacman isn't already installed, install it.
 
+# if you're running this script "chunkwise" in Rstudio and want to see each step of the function, run the line below so that you have a df to operate on.
+#df <- read.delim(fn_hardcoded,  sep = '\t')
+  
 pacman::p_load(
   dplyr,#for data wrangling
   stringr, #for manipulating strings
@@ -39,7 +42,7 @@ df$Name_stripped_no_spaces <- df$Name_stripped %>%
 
 df %>% 
   dplyr::select(Language_ID, Name, Name_stripped, Name_stripped_no_spaces) %>% 
-  write_tsv("table_names.stripped.tsv")
+  write_tsv("table_names_stripped.tsv")
 }
 
 args = commandArgs(trailingOnly=TRUE)
@@ -47,8 +50,8 @@ args = commandArgs(trailingOnly=TRUE)
 if (length(args)==0) {
   df <- read.delim(fn_hardcoded, sep = '\t')
   creating_stripped_name_cols(df)
-} else if (length(args)==1) {
+} else if (length(args)!=0) {
   #there is only one argument that matters, the file path to a df that has at least a Language_ID and Name col and is in tsv format
-  df <-  read.delim(args[1], sep = '\t',)
+  df <-  read.delim(args[1], sep = '\t')
   creating_stripped_name_cols(df)
 }
