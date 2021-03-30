@@ -17,7 +17,7 @@ pacman::p_load(
 options(tidyverse.quiet = TRUE)
 
 #combining the tables languages and values from glottolog-cldf into one wide dataframe
-source("make_lang_values_wide_fetch_online.R.R")
+source("make_lang_values_wide_fetch_online.R")
 glottolog <- read_tsv("cldf_wide_df.tsv")
 
 #APICS
