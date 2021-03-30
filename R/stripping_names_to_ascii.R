@@ -5,6 +5,10 @@
 #If you already have a specific file in mind, you can hardcoded it in here. If you don't but choose the CLI path, don't worry it won't be used if you've given an argument in CLI.
 fn_hardcoded <- "output_tables/cldf_wide_df.tsv"
 
+#If you don't have the specific file "output_tables/cldf_wide_df.tsv" and no other test file to run, run the line below.
+#  source("make_lang_values_wide_fetch_online.R")
+
+
 creating_stripped_name_cols <- function(df){
 
 #installing and loading packages
@@ -41,7 +45,6 @@ df %>%
 args = commandArgs(trailingOnly=TRUE)
 
 if (length(args)==0) {
-#  source("make_lang_values_wide_fetch_online.R")
   df <- read.delim(fn_hardcoded, sep = '\t')
   creating_stripped_name_cols(df)
 } else if (length(args)==1) {
