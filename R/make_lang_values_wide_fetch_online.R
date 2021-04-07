@@ -29,7 +29,7 @@ for (table in cldf_json$tables ) {
   
   index <- index +1
   
-  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { 
+  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { #not every table in a cldf dataset has this attribute, or it can be set to "null". So we gotta check that this is even a thing in this table before we proceed
     if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#ValueTable") {index_ValueTable  <- index}
   }}
 
@@ -45,10 +45,9 @@ for (table in cldf_json$tables ) {
   
   index <- index +1
   
-  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { 
+  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { #not every table in a cldf dataset has this attribute, or it can be set to "null". So we gotta check that this is even a thing in this table before we proceed
     if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#LanguageTable") {index_LangaugeTable <- index}
   }}
-
 
 
 
