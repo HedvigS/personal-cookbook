@@ -26,9 +26,12 @@ index <- 0
 
 #going over each table in the json and checking which one conforms and saving the index of that one to a separate variable. First: "values"
 for (table in cldf_json$tables ) {
+  
   index <- index +1
-  if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#ValueTable") {index_ValueTable <- index}
-}
+  
+  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { 
+    if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#ValueTable") {index_ValueTable  <- index}
+  }}
 
 #using the index we derived above, pulling out the filename for that table
 values_fn_name <- cldf_json$tables[index_ValueTable][[1]]$url #not sure why this has the name "url" when it is just the filename but that is the way
@@ -38,11 +41,16 @@ values_csv_url <- paste0(cldf_github_folder, values_fn_name) #creating the URL p
 
 index <- 0
 
-#going over each table in the json and checking which one conforms and saving the index of that one to a separate variable
 for (table in cldf_json$tables ) {
+  
   index <- index +1
-  if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#LanguageTable") {index_LangaugeTable <- index}
-}
+  
+  if("dc:conformsTo" %in% names(table) & !is.null(table$`dc:conformsTo`)) { 
+    if(table$`dc:conformsTo` == "http://cldf.clld.org/v1.0/terms.rdf#LanguageTable") {index_LangaugeTable <- index}
+  }}
+
+
+
 
 #using the index we derived above, pulling out the filename for that table
 language_fn_name <- cldf_json$tables[index_LangaugeTable][[1]]$url
