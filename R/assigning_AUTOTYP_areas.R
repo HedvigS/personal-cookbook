@@ -15,7 +15,7 @@ options(tidyverse.quiet = TRUE)
 #combining the tables languages and values from glottolog_df-cldf into one wide dataframe.
 #this can be replaced with any list of Language_IDs, long and lat
 source("make_lang_values_wide_fetch_online.R")
-glottolog_df <- read_tsv("cldf_wide_df.tsv") %>% 
+glottolog_df <- read_tsv("output_tables/cldf_wide_df.tsv") %>% 
   dplyr::select(Language_ID, Longitude, Latitude)
 
 ##Adding in areas of linguistic contact from AUTOTYP
