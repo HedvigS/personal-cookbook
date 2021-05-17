@@ -10,7 +10,7 @@ pacman::p_load(
   readr #for reading in data files
 )
 
-dist_matrix <- read_tsv("example_matrix.tsv") %>% 
+dist_matrix <- read_tsv("example_data/example_matrix.tsv") %>% 
   column_to_rownames("Language_level_ID_Var1") 
 
 diag(dist_matrix) <- 0 #double confirm that diagonal is 0
@@ -52,4 +52,4 @@ glue('
      END; [distances]
      ') -> dist_nexus
 
-write_lines(dist_nexus, "ABVD_distances.nex", na = "")
+write_lines(dist_nexus, "otuput/ABVD_distances.nex", na = "")
