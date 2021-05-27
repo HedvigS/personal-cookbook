@@ -58,7 +58,11 @@ languages_csv_url <- paste0(cldf_github_folder, language_fn_name) #creating the 
 
 #reading in data and making it wide
 values <- readr::read_csv(values_csv_url, na = c("","<NA>"), col_types = cols()) %>% 
-  reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") #making long data wide
+    mutate(Value = ifelse(Parameter_ID == "aes", Code_ID, Value)) %>% 
+  mutate(Value = ifelse(Parameter_ID == "med", Code_ID, Value)) %>% 
+  reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") %>%  #making long data wide %>% 
+  mutate(med = str_replace(med, "med-", "")) %>% 
+  mutate(aes = str_replace(aes, "aes-", "")) 
 
 languages <- readr::read_csv(languages_csv_url, na = c("","<NA>"), col_types = cols())
 
