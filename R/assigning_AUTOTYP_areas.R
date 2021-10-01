@@ -22,20 +22,9 @@ glottolog_df <- read_tsv("output_tables/cldf_wide_df.tsv") %>%
 
 AUTOTYP <- read_csv("https://raw.githubusercontent.com/autotyp/autotyp-data/master/data/Register.csv") %>% 
   dplyr::select(Language_ID = Glottocode, Area, Longitude, Latitude) %>% 
-  filter(Language_ID != "balk1252") %>% #There's a set of languages in autotyp that have more than one area, for now they're just hardcoded excluded in these lines
-  filter(Language_ID != "east2295") %>% 
-  filter(Language_ID != "indo1316") %>% 
-  filter(Language_ID != "kyer1238") %>% 
-  filter(Language_ID != "mart1256") %>% 
-  filter(Language_ID != "minn1241") %>% 
-  filter(Language_ID != "noga1249") %>% 
-  filter(Language_ID != "oira1263") %>% 
-  filter(Language_ID != "peri1253") %>% 
-  filter(Language_ID != "taha1241") %>% 
-  filter(Language_ID != "tibe1272") %>% 
-  filter(Language_ID != "till1254") %>% 
-  filter(Language_ID != "toho1245") %>% 
-  filter(Language_ID != "kati1270")
+  group_by(Language_ID) %>% 
+  sample_n(1) #when a language is assigned to more than one area, pick randomly.
+
 
 #This next bit where we find the autotyp areas of languages was written by Seán Roberts
 # We know the autotyp-area of langauges in autotyp and their long lat. We don't know the autotyp area of languages in Glottolog. We also can't be sure that the long lat of languoids with the same glottoids in autotyp and glottolog_df have the exact identical long lat. First let's make two datasets, one for autotyp languages (hence lgs where we know the area) and those that we wish to know about, the Glottolog ones.
