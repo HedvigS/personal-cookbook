@@ -5,7 +5,8 @@ This is a collection of code (Python and R) which I use for particular purposes 
 * derive a subtree of a glottolog family tree based on a set of tips
 * plot points on a Pacific centered map
 * make cldf data tables languages and values wide
-* exclude language-languoids that aren't languages per se (aren't distinct from all other languages and haven't been used as main communication for a human society) * count the words (strings separated by spaces) in language names
+* exclude language-languoids that aren't languages per se (aren't distinct from all other languages and haven't been used as main communication for a human society)
+* * count the words (strings separated by spaces) in language names
 * stripping names of languoids in glottolog to just ascii (so SplitsTree and other packages can manage)
 * assigning each languoid to an AUTOTYP area
 * tease out a list of probable contact languages
