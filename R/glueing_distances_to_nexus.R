@@ -2,6 +2,8 @@
 
 #This script was written with significant help from Nay San https://www.resunay.com
 
+#If you are having trouble with taxa names, have a look at this script for stripping them down to something that for exampel SplitsTree finds palatable: https://github.com/HedvigS/personal-cldf-cookbook/blob/main/R/stripping_names_to_ascii.R
+
 pacman::p_load(
   dplyr,#for data wrangling
   knitr, 
