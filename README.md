@@ -1,6 +1,6 @@
-# Hedvig's personal cldf-cookbook
+# Hedvig's personal cookbook
 
-This is a collection of code (Python and R) which I use for particular purposes related to glottolog and cldf-data:
+This is a collection of code (Python and R) which I use for particular purposes mainly related to glottolog and cldf-data:
 
 * derive a subtree of a glottolog family tree based on a set of tips
 * plot points on a Pacific centered map
