@@ -98,7 +98,9 @@ for (node_name in nodes_to_keep) {
       }
 }
 
-tree <- keep.tip(tree, tip = tips_and_nodes_to_keep)
+tips_to_drop <- setdiff(tree$tip.label , tips_and_nodes_to_keep)
+
+tree <- drop.tip(tree, tip = tips_to_drop, collapse.singles = F)
 
 #double checking that we are indeed keeping what we intended to keep, not more or less
 n_to_keep <- tips_and_nodes_to_keep %>% length()
@@ -115,6 +117,8 @@ tree
   }
 }
 
+(c("a") %in% c("b", "c"))
+
 
 ######### DEMO DATA
 
@@ -130,6 +134,7 @@ tips_and_nodes_to_keep <- c("kanj1261", "tzel1253", "epig1241")
 
 trimmed_tree <- keep_nodes_and_tips(tree = clade_tree, tips_and_nodes_to_keep = tips_and_nodes_to_keep)
 
-clade_tree %>% plot.phylo(show.node.label = T)
+clade_tree %>% plot.phylo()
+nodelabels()
 
 trimmed_tree %>% plot.phylo(show.node.label = T)
