@@ -130,6 +130,7 @@ mayan_tree <- ape::read.tree(text = mayan_tree_nwk_string)
 # extracting a subset of this tree to make it a bit easier to see the result
 clade_tree <- ape::extract.clade(mayan_tree, 50)
 
+
 write.tree(clade_tree)
 
 tips_and_nodes_to_keep <- c("kanj1261", "tzel1253", "epig1241")
