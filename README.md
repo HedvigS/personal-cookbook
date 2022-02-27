@@ -1,11 +1,12 @@
-# Hedvig's personal cldf-cookbook
+# Hedvig's personal cookbook
 
-This is a collection of code (Python and R) which I use for particular purposes related to glottolog and cldf-data:
+This is a collection of code (Python and R) which I use for particular purposes mainly related to glottolog and cldf-data:
 
-* derive a subtree of a glottolog family tree based on a set of tips
+* derive a subtree of a glottolog family tree based on a set of glottocodes (be they nodes or tips)
 * plot points on a Pacific centered map
 * make cldf data tables languages and values wide
-* exclude language-languoids that aren't languages per se (aren't distinct from all other languages and haven't been used as main communication for a human society) * count the words (strings separated by spaces) in language names
+* exclude language-languoids that aren't languages per se (aren't distinct from all other languages and haven't been used as main communication for a human society)
+* count the words (strings separated by spaces) in language names
 * stripping names of languoids in glottolog to just ascii (so SplitsTree and other packages can manage)
 * assigning each languoid to an AUTOTYP area
 * tease out a list of probable contact languages
@@ -14,7 +15,7 @@ The scripts are currently written in a style whereby you can run them from the c
 
 There are nine scripts:
 
-* `python/create_tree_bottom_up.py` is a short script which takes a list of glottocodes for a given family in glottolog and outputs the subtree which contains all of those glottocodes as tips and no other 
+* `python/create_tree_bottom_up.py` is a short script which takes a list of glottocodes for a given family in glottolog and outputs the subtree which contains all of those glottocodes as tips and no other. The glottocodes supplied can be nodes in the original tree, i.e. languages above dialects, or tips already.
 * `R/Worldmap_plotting.R` is a longer script which plots points on a pacific-centered worldmap. It is exemplified with langoids from glottolog as points colored for MED or Family_ID, but can be adaopted for other purposes 
 * `R/make_lang_values_wide_fetch_online.R` fetches the language and values tables from the web ([glottolog/glottolog-cldf](https://github.com/glottolog/glottolog-cldf)) and combines them and makes them wide.
 * `R/make_lang_values_wide_local_clone.R` does almost exactly the same thing as the script above, except it relies on a local clone of a cldf-repos and makes use of [Simon Greenhill's package rcldf](https://github.com/SimonGreenhill/rcldf)
