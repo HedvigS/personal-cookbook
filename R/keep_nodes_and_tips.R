@@ -84,6 +84,7 @@ n_descdendants_in_keep_list <- all_descendants_vec %in%   tips_and_nodes_to_keep
 
 if (n_descdendants_in_keep_list > 0) {
   warning("The list of nodes and tips to keep supplied contains nodes and/or tips that are desdencants of other nodes in the list. This isn't allowable. Please revise list.")
+stop()
   } else{
 
 # going through the internal nodes one by one and pruning away descendant tips. It has to be tips that are pruned each time because drop.tip() only takes tips. So the while-loop works "upwards" in the tree until it hits the node in question and then stops.
