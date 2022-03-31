@@ -5,6 +5,7 @@ pacman::p_load(
   dplyr,#for data wrangling
   jsonlite, #reading json files
   readxl,
+  tidyverse,
   stringr, #for string evaluation
   readr #for reading in data files
 )
@@ -46,12 +47,26 @@ combined <- UN_pop_DF  %>%
   dplyr::select("ISO3 Alpha-code", "Population 1950" = "1950") %>% 
   left_join(country_codes_mapping_df) %>% 
   left_join(lg_count_countries_df) %>% 
-  rename("Number of languages" = n) 
+  rename("Number of languages" = n)  %>% 
+  mutate("Population 1950 log10" = log10(`Population 1950`)) %>% 
+  mutate("Number of languages log10" = log10(`Number of languages`))
 
 combined %>%
-  ggplot() +
-  geom_point(aes(x = `Population 1950` , y = `Number of languages`) ) +
-  theme_classic()
+  ggplot(aes(x = `Population 1950` , y = `Number of languages`)) +
+  geom_point( ) +
+  theme_classic() +
+  ggpubr::stat_cor(method = "pearson", p.digits = 2, geom = "label", color = "blue",
+                   label.y.npc="top", label.x.npc = "left", alpha = 0.8) +
+  geom_smooth(method='lm', formula = 'y ~ x')
 
 ggsave("number_of_languags_vs_pop.png")
 
+combined %>%
+  ggplot(aes(x = `Population 1950 log10` , y = `Number of languages log10`)) +
+  geom_point( ) +
+  theme_classic() +
+  ggpubr::stat_cor(method = "pearson", p.digits = 2, geom = "label", color = "blue",
+                   label.y.npc="top", label.x.npc = "left", alpha = 0.8) +
+  geom_smooth(method='lm', formula = 'y ~ x')
+  
+ggsave("number_of_languags_vs_poplog10.png")
