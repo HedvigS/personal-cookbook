@@ -54,4 +54,4 @@ glue('
      END; [distances]
      ') -> dist_nexus
 
-write_lines(dist_nexus, "otuput/ABVD_distances.nex", na = "")
+write_lines(dist_nexus, "output/ABVD_distances.nex", na = "")
