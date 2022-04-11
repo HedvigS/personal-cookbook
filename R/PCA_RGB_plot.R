@@ -145,7 +145,7 @@ PCA_df$RGB <- PCA_df %>%
 
 ##3D plots for the first 3 components, color coded
 
-png("3D_scatterplot_RGB.png", height = 700, width = 700, units = "px")
+png("output/3D_scatterplot_RGB.png", height = 700, width = 700, units = "px")
 
 #rotation variables for the 3d plot
 theta = 20
