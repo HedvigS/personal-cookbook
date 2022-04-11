@@ -10,6 +10,8 @@ pacman::p_load(
   tidyverse,#for data wrangling
   missForest, #for imputation 
   Amelia, #for visualising missingness
+  maps, #necessary package for map plotting
+  mapproj, #necessary package for map plotting
   readr #for reading in data files
 )
 
@@ -162,3 +164,59 @@ ggplot( aes(x = PC1, y = PC2, z =PC3), color = PCA_df$RGB) +
     hjust=c(1,0,0), vjust=c(1.5,1,-.2), color = c("darkred", "darkblue", "darkgreen")) 
 
 x <- dev.off()
+
+
+
+
+
+##worldmap
+
+glottolog_df_fn <- "output_tables/cldf_wide_df.tsv"
+if (!file.exists(glottolog_df_fn)){ 
+  source("make_lang_values_wide_fetch_online.R") }
+glottolog_df <- read_tsv(glottolog_df_fn, col_types = cols()) %>% 
+  dplyr::select(ID = Glottocode, Latitude, Longitude)
+
+
+#worldmaps
+#rendering a worldmap that is pacific centered
+world <- map_data('world', wrap=c(-25,335), ylim=c(-56,80), margin=T)
+
+lakes <- map_data("lakes", wrap=c(-25,335), col="white", border="gray", ylim=c(-55,65), margin=T)
+
+#shifting the longlat of the dataframe to match the pacific centered map
+PCA_df_long_shifted <- PCA_df %>% 
+  left_join(glottolog_df, by = "ID") %>% 
+  mutate(Longitude = if_else(Longitude <= -25, Longitude + 360, Longitude))
+
+basemap <- ggplot(PCA_df_long_shifted) +
+  geom_polygon(data=world, aes(x=long,
+                               y=lat,group=group),
+               colour="gray87",
+               fill="gray87", size = 0.5) +
+  geom_polygon(data=lakes, aes(x=long,
+                               y=lat,group=group),
+               colour="gray87",
+               fill="white", size = 0.3)  +
+  theme(legend.position="none",
+        panel.grid.major = element_blank(), #all of these lines are just removing default things like grid lines, axises etc
+        panel.grid.minor = element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.line = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank())   +
+  coord_map(projection = "vandergrinten", ylim=c(-56,67)) 
+
+
+png("output/3PCA_RGB_worldmap.png", width = 2200, height = 1200, units = "px", bg = "white")
+basemap +
+  geom_point(stat = "identity", size =5,
+             aes(x=Longitude, y=Latitude), color =  PCA_df_long_shifted$RGB,
+             shape=19, stroke = 0) +
+  theme(title  = element_text(size = 28))
+x <- dev.off()
+
