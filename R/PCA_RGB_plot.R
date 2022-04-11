@@ -1,6 +1,7 @@
 #This is a script showcasing imputing data with random forests, doing a PCA and visualising the results by mapping the first three components to RGB values and display them in a 3D plot.
 
 #written by Hedvig Skirgård
+#thanks to Damián Blasi for help with mapping to RGB and Daniel W. M. Acker for developing gg3D.
 
 #installing and loading packages
 if (!suppressPackageStartupMessages(require("pacman"))) { install.packages("pacman") } #if pacman isn't already installed, install it.
