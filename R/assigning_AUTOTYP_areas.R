@@ -14,13 +14,17 @@ options(tidyverse.quiet = TRUE)
 
 #combining the tables languages and values from glottolog_df-cldf into one wide dataframe.
 #this can be replaced with any list of Language_IDs, long and lat
-source("make_lang_values_wide_fetch_online.R")
-glottolog_df <- read_tsv("output_tables/cldf_wide_df.tsv") %>% 
+glottolog_df_fn <- "output_tables/cldf_wide_df.tsv"
+
+if (!file.exists(glottolog_df_fn)) {
+source("make_lang_values_wide_fetch_online.R") }
+
+glottolog_df <- read_tsv(glottolog_df_fn, show_col_types = F) %>% 
   dplyr::select(Language_ID, Longitude, Latitude)
 
 ##Adding in areas of linguistic contact from AUTOTYP
 
-AUTOTYP <- read_csv("https://raw.githubusercontent.com/autotyp/autotyp-data/master/data/Register.csv") %>% 
+AUTOTYP <- read_csv("https://raw.githubusercontent.com/autotyp/autotyp-data/master/data/csv/Register.csv") %>% 
   dplyr::select(Language_ID = Glottocode, Area, Longitude, Latitude) %>% 
   group_by(Language_ID) %>% 
   sample_n(1) #when a language is assigned to more than one area, pick randomly.
