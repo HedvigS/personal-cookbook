@@ -139,12 +139,13 @@ dist_list_sided %>%
                       jittered_points = TRUE, 
                       point_size = 2, point_shape = 21  ,  position = position_points_jitter(height = 0))  +
   geom_label(data = mean_labels, aes(x = mean_value, y = group_var1,
-                                     label = round(mean_value, 2)), size = 2, nudge_x = 0.01, nudge_y = 0.2, alpha = 0.7, label.padding = unit(0.1, "lines")) +
+                                     label = round(mean_value, 2)), size = 6, nudge_x = 0.01, nudge_y = 0.2, alpha = 0.7, label.padding = unit(0.1, "lines")) +
   theme_classic() +
   theme(axis.title = element_blank(), 
-        legend.position = "None") 
+        legend.position = "None", 
+        text = element_text(size = 20)) 
 
-ggsave("output/ridgeplot_AUTOTYP_area.png")
+ggsave("output/ridgeplot_AUTOTYP_area.png", width = 8, height = 11, units = "in")
 
 #heatmap
 
