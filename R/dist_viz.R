@@ -119,9 +119,9 @@ dist_list_sided <- dist_list %>%
   left_join(right, by = "Var2") %>% 
   mutate(same = ifelse(group_var1 == group_var2,"same", "diff")) %>% 
   filter(same == "same") %>% 
+  full_join(dist_gobal, by = c("value", "group_var1", "group_var2")) %>% 
   group_by(group_var1) %>% 
-  mutate(mean_value = mean(value)) %>% 
-  full_join(dist_gobal, by = c("value", "group_var1", "group_var2")) 
+  mutate(mean_value = mean(value))
 
 dist_list_sided$group_var1 <- fct_reorder(dist_list_sided$group_var1, dist_list_sided$mean_value)
 
