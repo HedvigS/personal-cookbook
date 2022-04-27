@@ -94,10 +94,12 @@ rownames(dist) <- data_few_missing_values$glottocode
 colnames(dist) <- data_few_missing_values$glottocode
 
 dist_sym <- dist 
+dist_asym <- dist
 
-dist[upper.tri(dist, diag = T)] <- NA #turning the diagonal (i.e. distances to itself) and the upper triangle to NA. This is because the matrix is symmertic, and we only want to know about each pair once.
+diag(dist_sym) <- NA #turning the diagonal into NA for the symmetrical matrix
+dist_asym[upper.tri(dist, diag = T)] <- NA #turning the diagonal (i.e. distances to itself) and the upper triangle to NA. This is because the matrix is symmertic, and we only want to know about each pair once.
 
-dist_list <- dist %>% 
+dist_list <- dist_asym %>% 
   reshape2::melt()  %>% 
   filter(!is.na(value)) 
 
@@ -154,6 +156,7 @@ ggsave("output/ridgeplot_AUTOTYP_area.png", width = 9, height = 11, units = "in"
 
 dist_sym_grouped <- dist_sym %>% 
   reshape2::melt()  %>% 
+  filter(!is.na(value)) %>% 
   left_join(left, by = "Var1") %>% 
   left_join(right, by = "Var2")  %>%
   group_by(group_var1, group_var2) %>% 
