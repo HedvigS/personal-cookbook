@@ -173,7 +173,7 @@ dist_sym_grouped %>%
                           dendrogram = "none",
                           revC = T,
                           trace = "none", 
-                      margin=c(15,15),
+                      margin=c(18,18),
                       cellnote = round(dist_sym_grouped, 2),
                       col=viridis(15, direction = -1))
 
