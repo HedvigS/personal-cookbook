@@ -66,7 +66,7 @@ values <- readr::read_csv(values_csv_url, na = c("","<NA>"), col_types = cols())
 
 languages <- readr::read_csv(languages_csv_url, na = c("","<NA>"), col_types = cols())
 
-#The languages-table from glottolog-cldf contains a paramter called "Language_ID" which is NOT the same as the parameter "Language_ID" in the values tables. This parameter is in fact the language leveled parent of a dialect. In order to avoid confusion, let's rename the parameter in the languages tables to the more transparent "Language_level_ID". This set-up first test if this is indeed a problem (i.e. if this is glottolog-cldf) and only does the renaming then.
+#The languages-table from glottolog-cldf contains a paramwter called "Language_ID" which is NOT the same as the parameter "Language_ID" in the values tables. This parameter is in fact the language leveled parent of a dialect. In order to avoid confusion, let's rename the parameter in the languages tables to the more transparent "Language_level_ID". This set-up first test if this is indeed a problem (i.e. if this is glottolog-cldf) and only does the renaming then.
 
 if(str_detect(cldf_github_folder, "glottolog")) {
   languages <- languages %>% 
