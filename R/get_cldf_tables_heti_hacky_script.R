@@ -25,7 +25,7 @@ if (!dir.exists("output_tables")) { dir.create("output_tables") }
 index <- 0
 
 #going over each table in the json and checking which one conforms and saving the index of that one to a separate variable. First: "values"
-for (table in cldf_json$tables ) {
+for (table in cldf_json$tables) {
   
   index <- index +1
   
