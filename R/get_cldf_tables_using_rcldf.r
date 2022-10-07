@@ -13,6 +13,7 @@ pacman::p_load(
   dplyr,#for data wrangling
   jsonlite, #reading json files
   stringr, #for string evaluation
+  cli,
   readr #for reading in data files
 )
 

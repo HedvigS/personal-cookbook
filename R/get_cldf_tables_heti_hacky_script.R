@@ -6,7 +6,8 @@ pacman::p_load(
   dplyr,#for data wrangling
   jsonlite, #reading json files
   stringr, #for string evaluation
-  readr #for reading in data files
+  readr, #for reading in data files
+  cli
 )
 
 
@@ -74,6 +75,8 @@ if(str_detect(cldf_github_folder, "glottolog")) {
     rename(Language_ID = ID)
 } else{  languages <- languages %>% 
   rename(Language_ID = ID)}
+
+#install.packages("cli")
 
 cldf_wide_df <- dplyr::full_join(values,languages) 
 
