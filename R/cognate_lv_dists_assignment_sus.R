@@ -3,7 +3,7 @@ library(cluster)
 library(reshape2)
 library(stringdist)
 
-forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvd/master/cldf/forms.csv")
+forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvd/master/cldf/forms.csv", show_col_types = F)
 
 unknown_cognacy <-  forms %>% 
   filter(is.na(Cognacy)) %>% 
@@ -16,19 +16,18 @@ known_cognacy <- forms %>%
   distinct()
   
 #make df to join to in loop
-dist_full <- matrix(nrow = 0, ncol = 3) %>% 
+dist_full <- matrix(nrow = 0, ncol = 7) %>% 
   as.data.frame() %>% 
-  rename("Var1" = V1, "Var2" = V2, "lv_dist"= V3) %>% 
-  mutate(Var1 = as.character(Var1)) %>% 
-  mutate(Var2 = as.character(Var2)) %>% 
+  rename("Var1" = V1, "Var2" = V2, "lv_dist"= V3, "Form_1" = V4, "Cognacy_1" = V5, "Form_2" = V6, "Cognacy_2" = V7) %>% 
+  mutate_if(.predicate = is.logical, as.character) %>% 
   mutate(lv_dist = as.numeric(lv_dist))
 
 ##
 #df to join info on the side of dists df
 left <- forms %>%
-dplyr::select(Var1 = Form, ID_1 = ID, Cognacy_1 = Cognacy)
+dplyr::select(Var1 = ID, Form_1 = Form, Cognacy_1 = Cognacy)
 right <- forms %>%
-dplyr::select(Var2 = Form, ID_2 = ID, Cognacy_2 = Cognacy)
+dplyr::select(Var2 = ID,Form_2 = Form, Cognacy_2 = Cognacy)
 
 #vector of unique concepts to loop over
 Parameters_ID_unique_vector <- forms$Parameter_ID %>% unique()
@@ -37,7 +36,7 @@ Parameters_ID_unique_vector <- forms$Parameter_ID %>% unique()
 index <- 0
 
 #for loop, calcuating the lv dist each time for all words within each concept
-for(Paramter in Parameters_ID_unique_vector){
+for(Parameter in Parameters_ID_unique_vector){
 
 index <- index + 1
 
@@ -66,7 +65,7 @@ left_join(left, by = "Var1") %>%
 left_join(right, by = "Var2") %>%
 distinct()
 
-dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist"))  %>%
+dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist", "Form_1", "Cognacy_1", "Form_2", "Cognacy_2"))  %>%
   distinct()
 
 }
