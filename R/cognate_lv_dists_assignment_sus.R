@@ -70,23 +70,15 @@ dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist", 
 
 }
 
-
-joined %>%
-  filter(lv_dist ==0) %>% 
-  distinct(Var1) %>% nrow()
-
-
 #different cognate same form
 different_cognate_same_form <- forms %>% 
-  distinct(Form_1, Parameter_ID, Cognacy) %>% 
-  group_by(Form_1, Parameter_ID) %>%
+  distinct(Form, Parameter_ID, Cognacy) %>% 
+  group_by(Form, Parameter_ID) %>%
   summarise(n = n()) %>% 
-  filter(n > 1) %>% 
-  distinct(Form_1, Parameter_ID)
+  filter(n > 1) 
 
 
-#compare all dists
-
-dists_sided <- dist_full %>% 
-  left_join(left) %>% 
-  left_join(right)
+#forms with missing cognacy that could probably be filled in easily
+possible_matches <- dist_full %>% 
+  filter(is.na(Cognacy_2)) %>% 
+  filter(!is.na(Cognacy_1))
