@@ -24,17 +24,19 @@ dist_full <- matrix(nrow = 0, ncol = 3) %>%
   mutate(lv_dist = as.numeric(lv_dist))
 
 ##
-
-
+#df to join info on the side of dists df
 left <- forms %>%
 dplyr::select(Var1 = Form, ID_1 = ID, Cognacy_1 = Cognacy)
 right <- forms %>%
 dplyr::select(Var2 = Form, ID_2 = ID, Cognacy_2 = Cognacy)
 
+#vector of unique concepts to loop over
 Parameters_ID_unique_vector <- forms$Parameter_ID %>% unique()
 
+#index to start loop at
 index <- 0
 
+#for loop, calcuating the lv dist each time for all words within each concept
 for(Paramter in Parameters_ID_unique_vector){
 
 index <- index + 1
@@ -64,7 +66,8 @@ left_join(left, by = "Var1") %>%
 left_join(right, by = "Var2") %>%
 distinct()
 
-dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist"))
+dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist"))  %>%
+  distinct()
 
 }
 
