@@ -3,7 +3,7 @@ library(cluster)
 library(reshape2)
 library(stringdist)
 
-forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvd/master/cldf/forms.csv", show_col_types = F)
+forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvdoceanic/master/cldf/forms.csv", show_col_types = F)
 
 unknown_cognacy <-  forms %>% 
   filter(is.na(Cognacy)) %>% 
@@ -44,6 +44,7 @@ cat(paste0("I'm on ", Parameters_ID_unique_vector[index], ". Which is index ", i
 
 forms_spec <- forms %>%
 filter(Parameter_ID == Parameters_ID_unique_vector[index])
+#filter(Parameter_ID == "122_water")
 
 form_vec <- as.vector(forms_spec$Form)
 
@@ -81,4 +82,5 @@ different_cognate_same_form <- forms %>%
 #forms with missing cognacy that could probably be filled in easily
 possible_matches <- dist_full %>% 
   filter(is.na(Cognacy_2)) %>% 
-  filter(!is.na(Cognacy_1))
+  filter(!is.na(Cognacy_1)) %>% 
+  filter(lv_dist == 0)
