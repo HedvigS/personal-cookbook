@@ -1,8 +1,9 @@
 library(ape)
 library(caper)
 library(tidyverse)
+library(phytools)
 
-set.seed(43)
+#set.seed(43)
 
 #testing it out with a tree with 28 tips
 
@@ -125,3 +126,32 @@ for(iter in iterations){
     
   }
 }
+
+
+#GB116_gray_et_al_2009_posterior_tree_pruned_98.txt
+
+GB_df <- read_tsv("example_data/GB_wide_binarized.tsv", show_col_types = F) %>% 
+  dplyr::select(tip.label = Language_ID, GB116) %>% 
+  as.data.frame() 
+
+tree <- read.tree("example_data/gray_et_al_2009_posterior_tree_pruned_98.txt")
+
+ds <- comparative.data(tree, GB_df, names.col=tip.label)
+
+destimate_vec <- c()
+
+for(iter in 1:40){
+  cat("I'm on iter", iter, ".\n")
+output <- caper::phylo.d(ds, binvar = GB116)
+
+destimate_vec <- c(destimate_vec, output$DEstimate[[1]])
+}
+
+matrix_for_dottree <- GB_df %>% 
+  column_to_rownames("tip.label") %>% 
+  as.matrix()
+
+vec <- ds$data 
+names(vec) <- rownames(ds$data)
+
+plotTree(tree,fsize=0.5)
