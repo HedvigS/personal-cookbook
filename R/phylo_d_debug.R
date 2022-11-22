@@ -130,11 +130,11 @@ for(iter in iterations){
 
 #GB116_gray_et_al_2009_posterior_tree_pruned_98.txt
 
-GB_df <- read_tsv("example_data/GB_wide_binarized.tsv", show_col_types = F) %>% 
+GB_df <- read_tsv("example_data/feature_98_df.tsv", show_col_types = F) %>% 
   dplyr::select(tip.label = Language_ID, GB116) %>% 
   as.data.frame() 
 
-tree <- read.tree("example_data/gray_et_al_2009_posterior_tree_pruned_98.txt")
+tree <- read.tree("example_data/tree_98.txt")
 
 ds <- comparative.data(tree, GB_df, names.col=tip.label)
 
