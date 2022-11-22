@@ -131,7 +131,7 @@ for(iter in iterations){
 #GB116_gray_et_al_2009_posterior_tree_pruned_98.txt
 
 GB_df <- read_tsv("example_data/feature_98_df.tsv", show_col_types = F) %>% 
-  dplyr::select(tip.label = Language_ID, GB116) %>% 
+  dplyr::select(tip.label = Language_ID, Value) %>% 
   as.data.frame() 
 
 tree <- read.tree("example_data/tree_98.txt")
@@ -142,7 +142,7 @@ destimate_vec <- c()
 
 for(iter in 1:40){
   cat("I'm on iter", iter, ".\n")
-output <- caper::phylo.d(ds, binvar = GB116)
+output <- caper::phylo.d(ds, binvar = Value)
 
 destimate_vec <- c(destimate_vec, output$DEstimate[[1]])
 }
