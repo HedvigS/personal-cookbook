@@ -4,6 +4,7 @@ library(tidyverse)
 library(phytools)
 library(beepr)
 
+
 set.seed(67)
 
 #read in tree
@@ -143,3 +144,16 @@ result_df %>%
 
 ggsave(filename = "output/phylo_d_permut_plot.png", width = 8, height = 5, units = "in")
 
+result_df %>% 
+  filter(permut == 30000) %>% 
+  group_by(zeroes) %>% 
+  summarise(var = var(Destimate)) %>% 
+  ggplot() +
+  geom_point(aes(x = zeroes, y = var)) +
+  geom_text(aes(x = zeroes, y = var, label = round(var, 2)), angle = 70, nudge_y = 30)+
+  theme_minimal() +
+  xlab("Number of tips with different value") +
+theme(legend.position = 0, 
+      plot.background = element_rect(color = "white"))
+
+ggsave(filename = "output/phylo_d_scatterplot_var.png", width = 8, height = 5, units = "in")
