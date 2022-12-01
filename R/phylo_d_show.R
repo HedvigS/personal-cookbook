@@ -53,10 +53,22 @@ df <- df %>%
                "triplets_a"      ,  "triplets_b"   ,    "triplets_c"   ,      "three_random" , "quadruplets_a"   ,  "quadruplets_b"   , "quadruplets_c"  ,  "four_random" , "cluster"   ,             
               "cluster_random"  ) 
 
+#make a tree viz to show the groupings
 png(filename = "output/phylo_d_heatmap_tree.png", width = 10, height = 10, res = 300, units = "in")
-phytools::phylo.heatmap(tree, df,legend = F, tip.labels = T, outline = F, pts = F, offset = 0,  show.tip.label = F, dot.legend= F, Ntip = F, colors = c("#83E1E5", "#F7FFDA"))
+phytools::phylo.heatmap(tree, df,legend = F, tip.labels = F, outline = F, pts = F, offset = 0,  show.tip.label = F, dot.legend= F, Ntip = F, colors = c("#83E1E5", "#F7FFDA"))
 x <- dev.off()
 
+for_dot_tree <- df %>% 
+  dplyr::select(singleton_outlier) %>% 
+  mutate(singleton_outlier = abs(singleton_outlier-1))
+
+png(filename = "output/phylo_d_singleton_tree.png", width = 10, height = 10, res = 300, units = "in")
+phytools::dotTree(tree = tree, x = for_dot_tree, tip.labels = F, standardize = T,	
+
+                  colors = c("#83E1E5", "#F7FFDA"))
+x <- dev.off()
+
+#setting up looping over features
 vars <- colnames(df)
 
 #making comp ojbect
@@ -115,11 +127,12 @@ for(permut in permut_vec){
   }
 }
 }
+beep()
 
 result_df %>%
-  dplyr::filter(zeroes < 6) %>% 
+#  dplyr::filter(zeroes < 6) %>% 
   ggplot() +
-  geom_point(mapping = aes(x = zeroes, y = Destimate, color = permut), size = 1, shape = 23) +
+  geom_point(mapping = aes(x = zeroes, y = Destimate, color = permut), size = 3, shape = 23) +
   facet_grid(~permut) +
   theme_minimal() +
   scale_y_continuous(breaks = c(0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500)) +
