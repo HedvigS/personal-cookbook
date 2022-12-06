@@ -1,4 +1,4 @@
-%%% This is unified.bst, made by Bridget Samuels. It is based on sp.bst (v1.9+)
+%%% This is a bst-file, made by Bridget Samuels and modified by Hedvig Skirgård and Stephen Mann. It is based on sp.bst (v1.9+)
 %%% coded by Kai von Fintel as the house style for bibliographies in the journal
 %%% Semantics and Pragmatics. The style is based on a style generated 
 %%% with custom-bib/merlin.mbs, a system for customizing bibliographic styles
