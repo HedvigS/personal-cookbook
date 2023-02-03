@@ -102,3 +102,23 @@ packages_in_most_scripts <-  used_packages %>%
 
 cat("The top 5 packages that are used in the most scripts:\n ")
 packages_in_most_scripts[1:5,]
+
+#generating bibtex file of all the packages where you've used at least one funciton
+h_load("knitr")
+
+output_fn <- "used_pkgs.bib"
+
+knitr::write_bib(used_packages$packages, file = output_fn)
+
+cat(paste0("Wrote citations for packages you've used to", output_fn, ".\n There were ", length(!is.na(used_packages$packages %>% unique()))
+           , " entries.\n" ))
+
+#optional part, this generates a text string with the bibtex citation KEYS from earlier that you can then paste into LaTeX in order to cite all
+
+h_load("bib2df")
+
+bibdf <- suppressMessages(bib2df(output_fn)) #there's an old bug in bib2df that warns that as.tibble is deprecated, I've suppress this to spare you. the package maintainer has been informed. it's not a serious warning
+
+bibdf$BIBTEXKEY %>% 
+  writeLines(sep = ", ", con = "citation_keys.txt")
+
