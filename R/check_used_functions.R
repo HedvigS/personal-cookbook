@@ -41,6 +41,11 @@ df <- full_join(x, df, by = c("packages", "functions", "scripts"))
 used_packages <- df %>% 
   mutate(used = "TRUE")
 
+# dealing with instances where a package wasn't found. in pipe above this was listed as "" but it should be a proper NA
+used_packages <- naniar::replace_with_na(data = used_packages, replace= list(packages = ""))
+used_packages$packages <- trimws(used_packages$packages)
+
+
 #make df with all loaded packages (loaded in this script!!)
 loaded_packages <- data.frame(packages = (.packages())) %>% 
   mutate(loaded = "TRUE")
