@@ -83,3 +83,22 @@ most_used %>%
         legend.position = 0) 
 
 ggsave("used_packages.png")
+
+
+script_with_most_functions <-  used_packages %>% 
+  distinct(scripts, functions) %>% 
+  group_by(scripts) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n)) 
+
+cat("The top 5 scripst which use the most differenty functions:\n ")
+script_with_most_functions [1:5,]
+
+packages_in_most_scripts <-  used_packages %>% 
+  distinct(scripts, packages) %>% 
+  group_by(packages) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n)) 
+
+cat("The top 5 packages that are used in the most scripts:\n ")
+packages_in_most_scripts[1:5,]
