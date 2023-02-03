@@ -52,12 +52,25 @@ unused_but_loaded
 
 warning("Note there may be errors, for example the script doesn't tend to understand tidyverse properly but checks each package inside." )
 
-cat("The top 5 packages from which you use the most different functions are: ")
-used_packages %>% 
+most_used <- used_packages %>% 
   distinct(packages, functions) %>% 
   group_by(packages) %>% 
   summarise(n = n()) %>% 
-  arrange(desc(n)) %>% 
-  .[1:5,]
+  arrange(desc(n)) 
+
+
+cat("The top 5 packages from which you use the most different functions are: ")
+most_used[1:5,]
 
 cat("Keep in mind, this is not top-5 per times you use the package but the top-5 of pacakges from which you use the most functions.")
+
+most_used$packages <- fct_reorder(most_used$packages, most_used$n)
+
+most_used %>% 
+  ggplot() +
+  geom_bar(aes(x = packages, y = n, fill = n), stat = "identity") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1), 
+        legend.position = 0) 
+
+ggsave("used_packages.png")
