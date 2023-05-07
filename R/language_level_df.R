@@ -1,6 +1,6 @@
-#' Reduce dialects in datasets to one per language, and give it the glottocode of the parent that is at level language.
+#' Reduce dialects in dataframe to one per language, and give it the glottocode of the parent that is at level language. Requires a cldf-value table and language-table.
 #'
-#' @param dataset variable name for a wide data frame in the environment. one column needs to be "Language_ID" and all other columns need to be the relevant variables. There should not be columns with Language meta-data like Longitude, Family_name etc. The data-frame needs to be wide
+#' @param dataset variable name for a wide data frame in the environment. One column needs to be "Language_ID" and all other columns need to be the relevant variables. There should not be columns with Language meta-data like Longitude, Family_name etc. The data-frame needs to be wide, use function make_ValueTable_wide if need be. The function currently does not support datasets where Language_ID is not glottocodes (e.g. WALS).
 #' @param method combine_random = combine all datapoints for all the dialects and if there is more than one datapoint for a given feature/word/variable choose randomly between them, singular_random = choose randomly between the dialects, singular_least_missing_data = choose the dialect which has the most datapoints 
 #' @param language_table a filepath to a csv-sheet of a table with glottocodes and language-level glottocodes of the type LanguageTable in the cldf-ontology. if nothing is specified, it fetches table from glottolog-cldf online on github (i.e. most recent version)
 #' #' @param question_mark_action There is ?-values and missing values. Should they be merged or kept separate
