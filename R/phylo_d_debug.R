@@ -11,6 +11,8 @@ tree <- ape::read.tree(text = "((((((((North_Marquesan:0.03703703704,Mangareva:0
 
 is.ultrametric(tree)
 
+plot(tree)
+
 df <- tree$tip.label %>%
   as.data.frame() %>%
   rename(tip.label = ".") %>% 
@@ -23,9 +25,9 @@ df <- tree$tip.label %>%
 df$outlier_random <- sample(df$outlier_end)
 df$cluster_random <- sample(df$clustered)
 
-df$outlier_end <- abs(df$outlier_end-1)
-df$outlier_random <- abs(df$outlier_random -1)
-df$outlier_middle <- abs(df$outlier_middle-1)
+#df$outlier_end <- abs(df$outlier_end-1)
+#df$outlier_random <- abs(df$outlier_random -1)
+#df$outlier_middle <- abs(df$outlier_middle-1)
 
 # Build the comparative dataset once
 
@@ -144,7 +146,7 @@ ds <- comparative.data(tree, GB_df, names.col=tip.label)
 
 destimate_vec <- c()
 
-for(iter in 1:40){
+for(iter in 1:8){
   cat("I'm on iter", iter, ".\n")
 output <- caper::phylo.d(ds, binvar = Value, permut = 20000)
 
