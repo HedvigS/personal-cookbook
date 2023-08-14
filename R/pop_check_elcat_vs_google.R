@@ -1,16 +1,18 @@
+source("fun_def_h_load.R")
 
+h_load(pkg = c("tidyverse", "viridis"))
 
-google <- read_tsv("../../../google-research/url-nlp/language_metadata/data.tsv", show_col_types = F) %>% 
+google <- read_tsv("https://raw.githubusercontent.com/google-research/url-nlp/main/language_metadata/data.tsv", show_col_types = F) %>% 
   dplyr::select(Glottocode = `Glottocode (Glottolog)`, Speakers_google = `Number of speakers (rounded)`)
 
-elcat_values <- read_csv("../../../cldf-datasets/elcat/cldf/values.csv", show_col_types = F) %>% 
+elcat_values <- read_csv("https://raw.githubusercontent.com/cldf-datasets/elcat/main/cldf/values.csv", show_col_types = F) %>% 
   filter(Parameter_ID == "speaker_number") %>% 
   dplyr::select(Language_ID, Parameter_ID, Value)
 
-elcat_lgs <- read_csv("../../../cldf-datasets/elcat/cldf/languages.csv", show_col_types = F) %>% 
+elcat_lgs <- read_csv("https://raw.githubusercontent.com/cldf-datasets/elcat/main/cldf/languages.csv", show_col_types = F) %>% 
   dplyr::select(Language_ID = ID, Glottocode)
 
-elcat_code <- read_csv("../../../cldf-datasets/elcat/cldf/codes.csv", show_col_types = F) %>% 
+elcat_code <- read_csv("https://raw.githubusercontent.com/cldf-datasets/elcat/main/cldf/codes.csv", show_col_types = F) %>% 
   filter(Parameter_ID == "speaker_number") %>% 
   dplyr::select(ID, Description) %>% 
   separate(ID, into = c("Parameter_ID", "Value"), sep = "-") %>%  
@@ -21,16 +23,14 @@ elcat <- full_join(elcat_values, elcat_lgs, relationship = "many-to-many", by = 
   dplyr::select(Glottocode, Value, Speakers_elcat = Description) %>% 
   distinct()
 
-combined <- inner_join(google, elcat) %>% 
+combined <- full_join(google, elcat) %>% 
   distinct() %>% 
-  filter(!is.na(Value)) %>% 
-  filter(!is.na(Speakers_google)) %>% 
   mutate(Value = as.numeric(Value))
 
-combined$Speakers_elcat <- fct_reorder(combined$Speakers_elcat, desc(combined$Value))
+combined$Speakers_elcat <- fct_reorder(combined$Speakers_elcat, desc(combined$Value), .na_rm = F)
 
 combined$Speakers_google <- factor(combined$Speakers_google, levels = 
-c(
+c(NA,
 "<10K",
 "10K-100K", 
 "10000",
@@ -53,10 +53,18 @@ c(
 )
 
 combined %>% 
+  filter(!is.na(Value)) %>% 
+  filter(!is.na(Speakers_google)) %>% 
   ggplot() +
-  geom_point(mapping = aes(x = Speakers_google, y = Speakers_elcat)) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 70))
+  geom_point(mapping = aes(x = Speakers_google, y = Speakers_elcat, color = Speakers_google, fill = Speakers_elcat), stroke = 1, shape = 21) +
+  theme_classic() +
+  theme(legend.position = "None", 
+    axis.text.x = element_text(hjust = 1, angle = 70), 
+        text = element_text(size = 14)) +
+  coord_fixed() 
 
-ggsave("google_vs_elcat_pop.png")
+ggsave("output/google_vs_elcat_pop.png")
+
+
+
 
