@@ -13,7 +13,8 @@ pacman::p_load(
 
 #finding the filenames for the two tables we are intersted in, the language and value tables. The specific filenames can vary, so instead of identifying them via the filename we should check which of the tables conform to particular CLDF-standards and then take the filenames for the tables that conform to those standards fromt the meta-datajson.
 
-cldf_github_folder <- "https://raw.githubusercontent.com/glottolog/glottolog-cldf/master/cldf/"
+#glottolog_4.8
+cldf_github_folder <- "https://raw.githubusercontent.com/glottolog/glottolog-cldf/v4.8/cldf/"
 
 cldf_json <- jsonlite::read_json(paste0(cldf_github_folder, "cldf-metadata.json"))
 
