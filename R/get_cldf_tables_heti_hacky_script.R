@@ -18,6 +18,7 @@ cldf_github_folder <- "https://raw.githubusercontent.com/glottolog/glottolog-cld
 
 cldf_json <- jsonlite::read_json(paste0(cldf_github_folder, "cldf-metadata.json"))
 
+set_isolate_Family_ID_to_isolate <- "yes"
 
 #creating a folder for outputting tables
 if (!dir.exists("output_tables")) { dir.create("output_tables") }
@@ -74,12 +75,20 @@ if(str_detect(cldf_github_folder, "glottolog")) {
   languages <- languages %>% 
     rename(Language_level_ID = Language_ID) %>% 
     rename(Language_ID = ID)
-} else{  languages <- languages %>% 
+  } else{  languages <- languages %>% 
   rename(Language_ID = ID)}
 
 #install.packages("cli")
 
-cldf_wide_df <- dplyr::full_join(values,languages) 
+cldf_wide_df <- dplyr::full_join(values,languages, by = "Language_ID") 
+
+#if the user has said they want isolates to get isolate in their family_id and if the cldf is glottolog, do it.
+if(set_isolate_Family_ID_to_isolate == "Yes" &
+   str_detect(cldf_github_folder, "glottolog")){
+
+cldf_wide_df <- cldf_wide_df %>% 
+  mutate(Family_ID = if_else(is.na(Family_ID) & level != "family", Language_level_ID, Family_ID)) 
+}
 
 write_tsv(cldf_wide_df, "output_tables/cldf_wide_df.tsv")
 
