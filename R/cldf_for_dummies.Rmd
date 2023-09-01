@@ -11,7 +11,7 @@ This document outlines some of the very basics of the Cross-Linguistic Data Form
 
 It's plain, flat and simpler than you might think. In this document, you will learn the very basics on how it works and how to read them in.
 
-The data format was first published in 2018 [1] and has since then expanded to include a large amount of different datasets.
+The data format was first published in 2018 [1] and has since then expanded to include a large amount of different data sets.
 
 The CLDF-format is well-documented. This document is a very basic intro, for more advanced queries go to <https://github.com/cldf/cldf/#readme> and <https://cldf.clld.org/>
 
