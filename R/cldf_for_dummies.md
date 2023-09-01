@@ -58,10 +58,11 @@ You are dealing with a CLDF-dataset if there is a file ending with the
 extension “json” and at the top it identifies a CLDF-dataset type. For
 example, it could be
 `dc:conformsTo": "http://cldf.clld.org/v1.0/terms.rdf#StructureDataset"`.
+(There is one exception, see “Good to know” below.)
 
 Typically, there is a folder called “cldf” with files like
 “languages.csv”, “values.csv” and “StructureDataset-metadata.json” in
-it. The last file will be different depending on the type of dataset.
+it. The last file will be different depending on the type of data set.
 
 Here are some examples of data sets that are available in CLDF-format
 that you may have encountered:
@@ -83,7 +84,8 @@ file](https://github.com/cldf/cldf#metadata-free-conformance). No json,
 no set of csvs. Just one file, for example values.csv. In such cases,
 the file doesn’t have any meta-data specified and just conforms to all
 the default settings. You can’t tell by a json that it’s a CLDF-dataset
-because there isn’t one.
+because there isn’t one. This type of CLDF-dataset is rare, and will not
+be discussed further here.
 
     ### Types of CLDF-datasets
 
@@ -113,7 +115,7 @@ references for the data. In such cases, each data-point is tied to a
 reference by the key in the bibTeX entry. Usually the key is in a column
 called “Source” in the ValueTable or FormTable. The bibTeX file is
 usually called “sources.bib”. If it’s called something else, it’ll say
-in the meta-data json file.
+so in the meta-data json file.
 
 ## Tables inside the datasets
 
@@ -127,9 +129,6 @@ which name is tied to which csv-file in the json. “LanguageTable” is
 usually found in the file languages.csv, “CodeTable” in codes.csv,
 “ValueTable” in values.csv, “CognateTable” in cognates.csv etc.
 
-Each table is usually tied to a pre-defined CLDF standard. For example,
-FormTables need to have the columns “ID”, “Form” and “Language_ID”.
-
 - LanguageTable -\> languages.csv (contains minimally ID)
 - FormTable -\> forms.csv (contains minimally ID, Form, Language_ID,
   Parameter_ID)
@@ -137,6 +136,10 @@ FormTables need to have the columns “ID”, “Form” and “Language_ID”.
 
 The json-meta data file says which table is in which file, **you can’t
 always bank on LanguageTable being in languages.csv**.
+
+Each table is usually tied to several pre-defined CLDF standards for the
+content. For example, FormTables need to have the columns “ID”, “Form”
+and “Language_ID”.
 
 Tables can have more columns than the minimal requirement.
 
@@ -230,7 +233,16 @@ column ID in the LanguageTable.
 |-----------------|--------------|-------------|--------|---------------|
 | 15-144_toburn-1 | 144_toburn   | 15          | pegew  | Blust-15-2005 |
 | 15-144_toburn-2 | 144_toburn   | 15          | tinew  | Blust-15-2005 |
-| 18-2_left       | 2_left       | 18          | akague | 38174         |
+| 18-2_left-1     | 2_left       | 18          | akague | 38174         |
+
+The ID column here is a combination of the Language_ID, Parameter_ID and
+last a number to distinguish if there are more than one form. For
+example, because Bintulu has two words for “to burn”, there are two rows
+with different Forms but the same Parameter_ID (they both mean “to
+burn”). The ID column, which identifies each form has a number at the
+end of the string which indicates the different form. If there is only
+one form, the string ends with “-1”, but as you can see for “to burn” it
+first has “-1” and then “-2”.
 
 **Source**
 
@@ -281,17 +293,18 @@ Grambank, there is a similar column, but it is called
 
 With the above information, we can now combine the tables if we want.
 For example, we can rename the ID column in each of the tables to
-“Language_ID”, “Parameter_ID” and “Form_ID” and then join. In the
-example below, not all columns are shown due to space. Nota Bene that
-both ParameterTable and LanguageTable contains the column “Name”, so
-they would have to be dropped or otherwise handled (for example renamed
-to “Parameter_name” and “Language_name”).
+“Language_ID”, “Parameter_ID” and “Form_ID” and then join them together
+into one new table. In the example below, not all columns are shown due
+to space. Nota Bene that both ParameterTable and LanguageTable contains
+the column “Name”, so they would have to be dropped or otherwise handled
+(for example renamed to “Parameter_name” and “Language_name”) otherwise
+the joining would not work correctly.
 
 | Form_ID         | Parameter_ID | Language_ID | Form   | Source        | Glottocode | Concepticon_ID |
 |-----------------|--------------|-------------|--------|---------------|------------|----------------|
 | 15-144_toburn-1 | 144_toburn   | 15          | pegew  | Blust-15-2005 | bint1246   | 2102           |
 | 15-144_toburn-2 | 144_toburn   | 15          | tinew  | Blust-15-2005 | bint1246   | 2102           |
-| 18-2_left       | 2_left       | 18          | akague | 38174         | cham1312   | 244            |
+| 18-2_left-1     | 2_left       | 18          | akague | 38174         | cham1312   | 244            |
 
 # Example: Structure
 
