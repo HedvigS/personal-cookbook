@@ -31,12 +31,20 @@ more advanced queries go to <https://github.com/cldf/cldf/#readme> and
 
 Good things to keep in mind:
 
+- the absolute best way to learn how CLDF works is to poke around in an
+  existing dataset. Open the files, check what’s in there, form
+  assumptions and then check if the assumptions are always true. Below
+  are two recommended starter-datasets
+  - Wordlist: NorthEuraLex v4.0
+    <https://github.com/lexibank/northeuralex/tree/v4.0/cldf>
+  - Structure: Grambank v1.0.3
+    <https://github.com/grambank/grambank/tree/v1.0.3/cldf>  
 - many CLDF-datasets are continuously released, so make sure to keep
   track of which **version** you are using.
 - if you use python, make sure to check out pycldf and cldfbench
-- if you use rcldf, keep an eye out for rcldf which is in development
+- if you use R, keep an eye out for rcldf which is in development
 - this document is about how to navigate existing CLDF-datasets as an
-  “end-user”, not how to make one
+  end-user, not how to make one.
 - there already exists a lot of documentation on how CLDF works, this
   document is not meant to be exhaustive but just a gentle entry to get
   you going. For more, see
