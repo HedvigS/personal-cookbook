@@ -7,13 +7,13 @@ output: rmarkdown::github_document
 
 # CLDF for dummies
 
-This document outlines some of the very basics of the Cross-Linguistic Data Format (CLDF). CLDF is a way of organizing language data, in particular data sets with many different languages in it. The basic organisation is a set of csv-sheets (languages.csv, forms.csv etc). These documents are linked to each other in a specific way which makes it possible to combine them into an interlinked database. At the same time, because they are just plain csv-sheets so they can easily be read in by most data analysis software programs like python, R, julia etc or just regular spreadsheet programs like LibreOffice or Microsoft Excel. It is not necessary to use FileMakerPro, Microsoft Access or similar programs.
+This document outlines some of the very basics of the Cross-Linguistic Data Format (CLDF). CLDF is a way of organizing language data, in particular data sets with many different languages in it. The basic organisation is a set of csv-sheets (languages.csv, forms.csv etc). These documents are linked to each other in a specific way which makes it possible to combine them into an interlinked database. The files are all governed by standards, there are sanity-checks to make sure all lines up right. Because they are just plain csv-sheets they can easily be read in by most data analysis software programs like python, R, julia etc or just regular spreadsheet programs like LibreOffice or Microsoft Excel. It is not necessary to use FileMakerPro, Microsoft Access or similar programs.
 
 It's plain, flat and simpler than you might think. In this document, you will learn the very basics on how it works and how to read them in.
 
 The data format was first published in 2018 [1] and has since then expanded to include a large amount of different datasets.
 
-The format is well-documented. This document is a very basic intro, for more advanced queries go to <https://github.com/cldf/cldf/#readme> and <https://cldf.clld.org/>
+The CLDF-format is well-documented. This document is a very basic intro, for more advanced queries go to <https://github.com/cldf/cldf/#readme> and <https://cldf.clld.org/>
 
 ## Before we start
 
