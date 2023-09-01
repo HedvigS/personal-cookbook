@@ -6,23 +6,40 @@ Hedvig Skirgård
 # CLDF for dummies
 
 This document outlines some of the very basics of the Cross-Linguistic
-Data Format (CLDF). CLDF is a way of organising language data, in
-particular datasets with many different languages in it. The basic
+Data Format (CLDF). CLDF is a way of organizing language data, in
+particular data sets with many different languages in it. The basic
 organisation is a set of csv-sheets (languages.csv, forms.csv etc).
 These documents are linked to each other in a specific way which makes
-it possible to combine them into a interlinked database. At the same
+it possible to combine them into an interlinked database. At the same
 time, because they are just plain csv-sheets so they can easily be read
 in by most data analysis software programs like python, R, julia etc or
 just regular spreadsheet programs like LibreOffice or Microsoft Excel.
 It is not necessary to use FileMakerPro, Microsoft Access or similar
 programs.
 
-It’s plain, flat and simple and you can get the hang of it in a jiffy!
-In this document, you will learn the very basics on how it works and how
-to read them in.
+It’s plain, flat and simpler than you might think. In this document, you
+will learn the very basics on how it works and how to read them in.
 
 The data format was first published in 2018 \[1\] and has since then
 expanded to include a large amount of different datasets.
+
+The format is well-documented. This document is a very basic intro, for
+more advanced queries go to <https://github.com/cldf/cldf/#readme> and
+<https://cldf.clld.org/>
+
+## Before we start
+
+Good things to keep in mind:
+
+- many CLDF-datasets are continuously released, so make sure to keep
+  track of which **version** you are using.
+- if you use python, make sure to check out pycldf and cldfbench
+- if you use rcldf, keep an eye out for rcldf which is in development
+- there already exists a lot of documentation on how CLDF works, this
+  document is not meant to be exhaustive but just a gentle entry to get
+  you going. For more, see
+  - <https://github.com/cldf/cldf/#readme>
+  - <https://cldf.clld.org/>
 
 ## How to know if you’re dealing with a CLDF-dataset
 
@@ -31,7 +48,7 @@ with files like “languages.csv”, “values.csv” and
 “StructureDataset-metadata.json” in it. The last file will be different
 depending on the type of dataset.
 
-Here are some examples of datasets that are available in CLDF-format
+Here are some examples of data sets that are available in CLDF-format
 that you may have encountered:
 
 - WALS (World Atlas of Language Structures)
@@ -56,37 +73,57 @@ There are five types of CLDF-datasets. They are also known as “modules”.
 - Dictionary (particular kind of lexicon, has Entries and Senses)
 - Parallel text (collections of paragraphs of the same text in different
   languages, has Forms, Segments and FunctionalEquivalents)
-- generic (no specific type)
+- generic (no specifics)
 
 ## Contents
 
-Each CLDF-dataset consists of
+Each CLDF-dataset consists minimally of:
 
-- a set of tables
-- a bibTeX-file
+- a set of tables (usually in csv-sheets)
 - a json-file
 
 The tables are usually in csv-format and contain the data itself. The
-json file has information *about* the dataset, for example what type it
-is, what the contents are etc. The bibTeX-file contains bibliographic
-references for the data. Each data-point is tied to a reference by the
-key in the bibTeX entry.
+json file has information *about* the dataset, for example the type of
+dataset is, what the contents are, what the filenames are etc.
 
-## Tables inside datasets
+Many cldf-datasets also contain a bibTeX-file with bibliographic
+references for the data. In such cases, each data-point is tied to a
+reference by the key in the bibTeX entry. Usually the key is in a column
+called “Source” in the ValueTable or FormTable. The bibTeX file is
+usually called “sources.bib”. If it’s called something else, it’ll say
+in the meta-data json file.
+
+## Tables inside the datasets
 
 There are some tables that occur in most CLDF-datasets, and some that
-occurr only in certain types. For example, there is no table with word
-forms for Structure datasets - that’s for wordlists and Dictionaries.
+occur only in certain types. For example, there is no table with word
+forms for Structure data sets - that’s for wordlists and Dictionaries.
 
-The tables have specific names in the CLDF-world. The names are
-different from their filenames. You can see which name is tied to which
-csv-file in the json. “LanguageTable” is usually found in the file
-languages.csv, “CodeTable” in codes.csv, “ValueTable” in values.csv,
-“CognateTable” in cognates.csv etc.
+The tables have specific names in the CLDF-world and have pre-defined
+specifics. The names are different from their filenames. You can see
+which name is tied to which csv-file in the json. “LanguageTable” is
+usually found in the file languages.csv, “CodeTable” in codes.csv,
+“ValueTable” in values.csv, “CognateTable” in cognates.csv etc.
+
+Each table is usually tied to a pre-defined CLDF standard. For example,
+FormTables need to have the columns “ID”, “Form” and “Language_ID”.
+
+- LanguageTable -\> languages.csv (contains minimally ID)
+- FormTable -\> forms.csv (contains minimally ID, Form, Language_ID,
+  Parameter_ID)
+- ParameterTable -\> parameters.csv (contains minimally ID, Name) etc.
+
+The json-meta data file says which table is in which file, **you can’t
+always bank on LanguageTable being in languages.csv**.
+
+Tables can have more columns than the minimal requirement.
+
+For more specifics, see this file for CLDF v1.0
+<http://cldf.clld.org/v1.0/terms.rdf>.
 
 #### Tables in most CLDF-dataset
 
-Here are CLDF-tables that occur in most CLDF-datasets
+Here are CLDF-tables that occur in most CLDF-datasets.
 
 - LanguageTable - list of all of the languages in the dataset. May also
   include things classified by Glottolog as dialects or proto-languages.
@@ -100,13 +137,18 @@ Wordlist also contain
 - CognateTable (not obligatory) - the cognate classification per form
   per concept per language
 
-Structure datasets also contain
+Structure data-sets also contain
 
-- ValueTable - the value for each Parameter and language
+- ValueTable - the value for each parameter and language. Usually also
+  Comment and Source.
 - CodeTable - The list of possible values for each parameter. For
   example, GB020 in Grambank is a binary feature and can take 0, 1 and ?
   whereas EA016 in the Ethnographic Atlas (D-PLACE) can take 1, 2 or 9.
   The options are exclusive of each other for each data-point.
+
+Good to know: for the CLDF-dataset of D-PLACE, the LanguageTable
+contains a row per *society*. There is a column for the Glottocode of
+the language associated with that society.
 
 # Example: Wordlist
 
@@ -115,6 +157,10 @@ Below is a tiny Wordlist CLDF-dataset. This dataset contains 3 words in
 contains information about the languages and parameters - in this case
 concepts. The FormTable contains the actual forms. For one of the
 concepts, one of the languages has two words and both are listed.
+
+The meta-data json is not included here. You can see an example of a
+Wordlist-metadata json file here:
+<https://github.com/lexibank/abvd/blob/master/cldf/cldf-metadata.json>.
 
 **LanguageTable**
 
@@ -127,6 +173,17 @@ ID column here is called “Language_ID”.
 |-----|----------|------------|
 | 15  | Bintulu  | bint1246   |
 | 18  | CHamorro | cham1312   |
+
+Good to know: Sometimes the IDs in LanguageTable are Glottocodes or ISO
+639-3 codes, but they don’t have to be. They just have to be unique
+within that dataset. In Grambank, the ID’s are Glottocodes, but WALS has
+its own specific unique code-system different from both Glottocodes and
+ISO 639-3. If you want Glottocodes, go look for a column called
+Glottocode in the LanguageTable - don’t use the ID column.
+
+Good to know 2: Glottocodes contain 4 letters or numbers and then 4
+numbers. The first 4 characters are not always letters. For example,
+`ww2p1234` and `3adt1234` are existing glottocodes.
 
 **ParameterTable**
 
@@ -144,7 +201,7 @@ ID column here is called “Parameter_ID”.
 One row = one form. The ID column uniquely identifies each form in the
 dataset. In other tables, the column that links to the ID column here is
 called “Form_ID”. Here we also see Parameter_ID, which links to the
-column ID in the ParameterTable and Language_ID which linkes to the
+column ID in the ParameterTable and Language_ID which links to the
 column ID in the LanguageTable.
 
 | ID              | Parameter_ID | Language_ID | Form   | Source        |
@@ -155,7 +212,11 @@ column ID in the LanguageTable.
 
 **Source**
 
-bibTeX file called “sources.bib” One entry = one source.
+Optional file, but often present in the form of a bibTeX-file. One entry
+= one source. The bibTeX file is usually called “sources.bib”, but not
+necessary (check metadata.json as usual). The bibTeX Key (the first
+string after `@BIBTEXENTRYTYPE{`) maps onto the Source column in the
+FormTable above.
 
     @misc{Blust-15-2005,
         author = {Blust},
@@ -177,28 +238,55 @@ Each of the tables has a column called “ID”. This column allows us to
 link the tables together. The column “Language_ID” in the FormTable maps
 onto the column “ID” in the LanguageTable, and so on.
 
-Langugage_ID -\> ID column in LanguageTable Parameter_ID -\> ID column
-in ParameterTable Form_ID -\> ID column in FormTable.
+- Langugage_ID -\> ID column in LanguageTable
+- Parameter_ID -\> ID column in ParameterTable
+- Form_ID -\> ID column in FormTable.
 
 There is no column “Form_ID” inside the FormTable, it’s just called ID
 there. Same with Parameter_ID and the ParameterTable and so on.
 
 **WARNING** Some LanguageTables contain a column called “Language_ID”
-which is not the same as the ID column. For dialects, this column
+which is **not** the same as the ID column. For dialects, this column
 contains the Glottocode of the language that they are a dialect of. For
-example, Eastern Low Navarrese is a dialect of Basque. The dialect
-glottocode is east1470. The glottocode of the language Basque is
+example, Eastern Low Navarrese is a dialect of Basque. The glottocode of
+this dialect is east1470. The glottocode of the language Basque is
 basq1248. If a LanguageTable has the column Language_ID, it would
-contain basq1248 for the dialect.
+contain basq1248 for the dialect. This helps when you might want to
+match by the language-level rather than dialect-level.The LanguageTable
+in Glottolog contains a column of this kind called “Language_ID”. In
+Grambank, there is a similar column, but it is called
+“Language_level_ID”.
+
+With the above information, we can now combine the tables if we want.
+For example, we can rename the ID column in each of the tables to
+“Language_ID”, “Parameter_ID” and “Form_ID” and then join. In the
+example below, not all columns are shown due to space. Nota Bene that
+both ParameterTable and LanguageTable contains the column “Name”, so
+they would have to be dropped or otherwise handled (for example renamed
+to “Parameter_name” and “Language_name”).
+
+| Form_ID         | Parameter_ID | Language_ID | Form   | Source        | Glottocode | Concepticon_ID |
+|-----------------|--------------|-------------|--------|---------------|------------|----------------|
+| 15-144_toburn-1 | 144_toburn   | 15          | pegew  | Blust-15-2005 | bint1246   | 2102           |
+| 15-144_toburn-2 | 144_toburn   | 15          | tinew  | Blust-15-2005 | bint1246   | 2102           |
+| 18-2_left       | 2_left       | 18          | akague | 38174         | cham1312   | 244            |
 
 # Example: Structure
 
 TBA
 
+# CLLD and CLDF
+
+CLDF is a type of data-format, the set of tables etc. CLLD is a larger
+project and stands for Cross-Linguistic Linked Data. CLDF is a part of
+CLLD. CLLD also does web applications, for example
+<https://clics.clld.org/>. CLDF data interfaces smoothly with CLLD web
+applications.
+
 ## Advanced
 
-If you want to learn more, go to:
-<https://github.com/cldf/cldf/tree/master>.
+This document is only a very basic intro. If you want to learn more, go
+to: <https://github.com/cldf/cldf/#readme>.
 
 ## References
 
