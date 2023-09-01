@@ -6,20 +6,21 @@ Hedvig Skirgård
 # CLDF for dummies
 
 This document outlines some of the very basics of the Cross-Linguistic
-Data Format (CLDF). CLDF is a way of organizing language data, in
-particular data sets with many different languages in it. The basic
-organisation is a set of csv-sheets (languages.csv, forms.csv etc).
-These documents are linked to each other in a specific way which makes
-it possible to combine them into an interlinked database. The files are
-all governed by standards, there are sanity-checks to make sure all
-lines up right. Because they are just plain csv-sheets they can easily
-be read in by most data analysis software programs like python, R, julia
-etc or just regular spreadsheet programs like LibreOffice or Microsoft
-Excel. It is not necessary to use FileMakerPro, Microsoft Access or
-similar programs.
+Data Format (CLDF) for researchers who want to use the data sets for
+analysis, comparison or plotting. CLDF is a way of organizing language
+data, in particular data sets with many different languages in it. The
+basic organisation is a set of csv-sheets (languages.csv, forms.csv
+etc). These documents are linked to each other in a specific way which
+makes it possible to combine them into an interlinked database. The
+files are all governed by standards, there are sanity-checks to make
+sure all lines up right. Because they are just plain csv-sheets they can
+easily be read in by most data analysis software programs like python,
+R, julia etc or just regular spreadsheet programs like LibreOffice or
+Microsoft Excel. It is not necessary to use FileMakerPro, Microsoft
+Access or similar programs.
 
 It’s plain, flat and simpler than you might think. In this document, you
-will learn the very basics on how it works and how to read them in.
+will learn the very basics on how it works.
 
 The data format was first published in 2018 \[1\] and has since then
 expanded to include a large amount of different data sets.
@@ -35,26 +36,26 @@ Good things to keep in mind:
 - the absolute best way to learn how CLDF works is to poke around in an
   existing dataset. Open the files, check what’s in there, form
   assumptions and then check if the assumptions are always true. Below
-  are two recommended starter-datasets
+  are two recommended starter-datasets:
   - Wordlist: NorthEuraLex v4.0
     <https://github.com/lexibank/northeuralex/tree/v4.0/cldf>
   - Structure: Grambank v1.0.3
     <https://github.com/grambank/grambank/tree/v1.0.3/cldf>  
 - many CLDF-datasets are continuously released, so make sure to keep
-  track of which **version** you are using.
+  track of which **version** you are using
 - if you use python, make sure to check out pycldf and cldfbench
 - if you use R, keep an eye out for rcldf which is in development
 - this document is about how to navigate existing CLDF-datasets as an
   end-user, not how to make one.
 - there already exists a lot of documentation on how CLDF works, this
   document is not meant to be exhaustive but just a gentle entry to get
-  you going. For more, see
+  you going. For more, see:
   - <https://github.com/cldf/cldf/#readme>
   - <https://cldf.clld.org/>
 
 ## How to know if you’re dealing with a CLDF-dataset
 
-You are dealing with a CLDF-dataset if there is a file ending with the
+You are dealing with a CLDF-data set if there is a file ending with the
 extension “json” and at the top it identifies a CLDF-dataset type. For
 example, it could be
 `dc:conformsTo": "http://cldf.clld.org/v1.0/terms.rdf#StructureDataset"`.
@@ -84,8 +85,10 @@ file](https://github.com/cldf/cldf#metadata-free-conformance). No json,
 no set of csvs. Just one file, for example values.csv. In such cases,
 the file doesn’t have any meta-data specified and just conforms to all
 the default settings. You can’t tell by a json that it’s a CLDF-dataset
-because there isn’t one. This type of CLDF-dataset is rare, and will not
-be discussed further here.
+because there isn’t one. This type of CLDF-data set is rare, and will
+not be dealt with further here. Please insert a “except for the
+metadata-free-conforming CLDF-data sets” mentally in the paragraphs
+below.
 
     ### Types of CLDF-datasets
 
@@ -134,8 +137,12 @@ usually found in the file languages.csv, “CodeTable” in codes.csv,
   Parameter_ID)
 - ParameterTable -\> parameters.csv (contains minimally ID, Name) etc.
 
-The json-meta data file says which table is in which file, **you can’t
-always bank on LanguageTable being in languages.csv**.
+The json-meta data file says which table is in which file, it’s
+specified as the url of the table which conforms to a certain
+CLDF-standard, for example for `LanguageTable`. **You can’t always bank
+on LanguageTable being in languages.csv**. `pycldf` and `rcldf` can
+handle this for you, i.e. look up in the json what table is where and
+set all that up.
 
 Each table is usually tied to several pre-defined CLDF standards for the
 content. For example, FormTables need to have the columns “ID”, “Form”
