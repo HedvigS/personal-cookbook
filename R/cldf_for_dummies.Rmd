@@ -147,7 +147,7 @@ One row = one form. The ID column uniquely identifies each form in the dataset. 
 | 15-144_toburn-2 | 144_toburn   | 15          | tinew  | Blust-15-2005 |
 | 18-2_left-1      | 2_left       | 18          | akague | 38174         |
 
-Note that because Bintulu has two words for "to burn", there are two rows with different Forms but the same Parameter_ID. The ID column, which identifies each form has a number at the end of the string which indicates the different form. If there is only one form, the string ends with "-1", but as you can see for "to burn" it first has "-1" and then "-2".
+The ID column here is a combination of the Language_ID, Parameter_ID and last a number to distinguish if there are more than one form. For example, because Bintulu has two words for "to burn", there are two rows with different Forms but the same Parameter_ID (they both mean "to burn"). The ID column, which identifies each form has a number at the end of the string which indicates the different form. If there is only one form, the string ends with "-1", but as you can see for "to burn" it first has "-1" and then "-2".
 
 **Source**
 
@@ -187,7 +187,7 @@ With the above information, we can now combine the tables if we want. For exampl
 |-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | 15-144_toburn-1 | 144_toburn   | 15          | pegew  | Blust-15-2005 | bint1246   | 2102           |
 | 15-144_toburn-2 | 144_toburn   | 15          | tinew  | Blust-15-2005 | bint1246   | 2102           |
-| 18-2_left       | 2_left       | 18          | akague | 38174         | cham1312   | 244            |
+| 18-2_left-1       | 2_left       | 18          | akague | 38174         | cham1312   | 244            |
 
 # Example: Structure
 
