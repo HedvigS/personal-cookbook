@@ -1,4 +1,4 @@
-cldf for dummies
+CLDF for dummies
 ================
 Hedvig Skirgård
 2023-09-01
@@ -35,6 +35,8 @@ Good things to keep in mind:
   track of which **version** you are using.
 - if you use python, make sure to check out pycldf and cldfbench
 - if you use rcldf, keep an eye out for rcldf which is in development
+- this document is about how to navigate existing CLDF-datasets as an
+  “end-user”, not how to make one
 - there already exists a lot of documentation on how CLDF works, this
   document is not meant to be exhaustive but just a gentle entry to get
   you going. For more, see
@@ -86,7 +88,7 @@ The tables are usually in csv-format and contain the data itself. The
 json file has information *about* the dataset, for example the type of
 dataset is, what the contents are, what the filenames are etc.
 
-Many cldf-datasets also contain a bibTeX-file with bibliographic
+Many CLDF-datasets also contain a bibTeX-file with bibliographic
 references for the data. In such cases, each data-point is tied to a
 reference by the key in the bibTeX entry. Usually the key is in a column
 called “Source” in the ValueTable or FormTable. The bibTeX file is
