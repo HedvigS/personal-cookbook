@@ -31,8 +31,9 @@ Good things to keep in mind:
     -   <https://cldf.clld.org/>
 
 ## How to know if you're dealing with a CLDF-dataset
+You are dealing with a CLDF-dataset if there is a file ending with the extension "json" and at the top it identifies a CLDF-dataset type. For example, it could be `dc:conformsTo": "http://cldf.clld.org/v1.0/terms.rdf#StructureDataset"`.
 
-You are dealing with a CLDF-dataset if there is a folder called "cldf" with files like "languages.csv", "values.csv" and "StructureDataset-metadata.json" in it. The last file will be different depending on the type of dataset.
+Typically, there is a folder called "cldf" with files like "languages.csv", "values.csv" and "StructureDataset-metadata.json" in it. The last file will be different depending on the type of dataset. 
 
 Here are some examples of data sets that are available in CLDF-format that you may have encountered:
 
@@ -47,6 +48,8 @@ Here are some examples of data sets that are available in CLDF-format that you m
 -   Lexibank
 
 -   Grambank
+
+Good to know: [It is possible for a CLDF-dataset to only consist of one file](https://github.com/cldf/cldf#metadata-free-conformance). No json, no set of csvs. Just one file, for example values.csv. In such cases, the file doesn't have any meta-data specified and just conforms to all the default settings. You can't tell by a json that it's a CLDF-dataset because there isn't one.
 
     ### Types of CLDF-datasets
 
