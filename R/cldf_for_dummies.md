@@ -1,7 +1,7 @@
 CLDF for dummies
 ================
 Hedvig Skirgård
-2023-09-01
+2023-09-04
 
 # CLDF for dummies
 
@@ -86,11 +86,9 @@ no set of csvs. Just one file, for example values.csv. In such cases,
 the file doesn’t have any meta-data specified and just conforms to all
 the default settings. You can’t tell by a json that it’s a CLDF-dataset
 because there isn’t one. This type of CLDF-data set is rare, and will
-not be dealt with further here. Please insert a “except for the
-metadata-free-conforming CLDF-data sets” mentally in the paragraphs
-below.
+not be dealt with further here.
 
-    ### Types of CLDF-datasets
+### Types of CLDF-datasets
 
 There are five types of CLDF-datasets. They are also known as “modules”.
 
@@ -104,7 +102,7 @@ There are five types of CLDF-datasets. They are also known as “modules”.
 
 ## Contents
 
-Each CLDF-dataset consists minimally of:
+Each CLDF-dataset (except the metadata-free ones) consists minimally of:
 
 - a set of tables (usually in csv-sheets)
 - a json-file
@@ -128,9 +126,9 @@ forms for Structure data sets - that’s for wordlists and Dictionaries.
 
 The tables have specific names in the CLDF-world and have pre-defined
 specifics. The names are different from their filenames. You can see
-which name is tied to which csv-file in the json. “LanguageTable” is
-usually found in the file languages.csv, “CodeTable” in codes.csv,
-“ValueTable” in values.csv, “CognateTable” in cognates.csv etc.
+which name is tied to which file in the json. “LanguageTable” is usually
+found in the file languages.csv, “CodeTable” in codes.csv, “ValueTable”
+in values.csv, “CognateTable” in cognates.csv etc.
 
 - LanguageTable -\> languages.csv (contains minimally ID)
 - FormTable -\> forms.csv (contains minimally ID, Form, Language_ID,
@@ -138,7 +136,7 @@ usually found in the file languages.csv, “CodeTable” in codes.csv,
 - ParameterTable -\> parameters.csv (contains minimally ID, Name) etc.
 
 The json-meta data file says which table is in which file, it’s
-specified as the url of the table which conforms to a certain
+specified as the `url` of the table which conforms to a certain
 CLDF-standard, for example for `LanguageTable`. **You can’t always bank
 on LanguageTable being in languages.csv**. `pycldf` and `rcldf` can
 handle this for you, i.e. look up in the json what table is where and
@@ -146,9 +144,10 @@ set all that up.
 
 Each table is usually tied to several pre-defined CLDF standards for the
 content. For example, FormTables need to have the columns “ID”, “Form”
-and “Language_ID”.
+and “Language_ID” and they in turn need to look a certain way.
 
-Tables can have more columns than the minimal requirement.
+Tables can have more columns than the minimal requirement and can have
+columns that don’t map onto CLDF-standards at all.
 
 For more specifics, see this file for CLDF v1.0
 <http://cldf.clld.org/v1.0/terms.rdf>.
@@ -181,6 +180,9 @@ Structure data-sets also contain
 Good to know: for the CLDF-dataset of D-PLACE, the LanguageTable
 contains a row per *society*. There is a column for the Glottocode of
 the language associated with that society.
+
+#### Columns in tables
+Each table consists of a set of columns. The names of these columns are often for example "ID", "Longitude", "Value" etc. However, they can vary. The meta-data contains information on which column name maps onto what property in the CLDF-universe. For example, there is the property "source"", which has the propertyURL <http://cldf.clld.org/v1.0/terms.rdf#source> and often is mapped onto a column called "Source". However, if one CLDF-creator wanted to name this column "Reference" instead, that's all well and good. The json-metadata-file would tell the users what column "Reference" corresponds to the standardised property "source" and point to the property-url. As with filenames of tables, you can often get by with assuming that bibliographic references are in a column called "Source" and the LanguageTable is in languages.csv --- but this needn't always be true! All glory to the json-metadata file.
 
 # Example: Wordlist
 
