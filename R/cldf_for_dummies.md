@@ -41,6 +41,9 @@ Good things to keep in mind:
     <https://github.com/lexibank/northeuralex/tree/v4.0/cldf>
   - Structure: Grambank v1.0.3
     <https://github.com/grambank/grambank/tree/v1.0.3/cldf>  
+- after having an initial poke around, read the spec for the dataset. They are the ones that'll tell you what the columns really are etc.
+  - https://github.com/lexibank/northeuralex/blob/v4.0/cldf/README.md
+  - https://github.com/grambank/grambank/blob/v1.0.3/cldf/README.md
 - many CLDF-datasets are continuously released, so make sure to keep
   track of which **version** you are using
 - if you use python, make sure to check out pycldf and cldfbench
