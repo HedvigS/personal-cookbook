@@ -9,11 +9,11 @@ This document outlines some of the very basics of the Cross-Linguistic
 Data Format (CLDF) for researchers who want to use the data sets for
 analysis, comparison or plotting. CLDF is a way of organizing language
 data, in particular data sets with many different languages in it. The
-basic organisation is a set of csv-sheets (languages.csv, forms.csv
+basic organisation is a set of tables, usually in csv-sheets (languages.csv, forms.csv
 etc). These documents are linked to each other in a specific way which
 makes it possible to combine them into an interlinked database. The
 files are all governed by standards, there are sanity-checks to make
-sure all lines up right. Because they are just plain csv-sheets they can
+sure all lines up right. Because they are often just plain csv-sheets they can
 easily be read in by most data analysis software programs like python,
 R, julia etc or just regular spreadsheet programs like LibreOffice or
 Microsoft Excel. It is not necessary to use FileMakerPro, Microsoft
