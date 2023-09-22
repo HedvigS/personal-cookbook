@@ -25,7 +25,7 @@ will learn the very basics on how it works.
 The data format was first published in 2018 \[1\] and has since then
 expanded to include a large amount of different data sets.
 
-The CLDF-format is well-documented. This document is a very basic intro,
+CLDF is well-documented. This document is a very basic intro,
 for more advanced queries go to <https://github.com/cldf/cldf/#readme>
 and <https://cldf.clld.org/>
 
@@ -68,7 +68,7 @@ Typically, there is a folder called “cldf” with files like
 “languages.csv”, “values.csv” and “StructureDataset-metadata.json” in
 it. The last file will be different depending on the type of data set.
 
-Here are some examples of data sets that are available in CLDF-format
+Here are some examples of data sets that are available in CLDF
 that you may have encountered:
 
 - WALS (World Atlas of Language Structures)
