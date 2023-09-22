@@ -6,7 +6,7 @@ Hedvig Skirgård
 # CLDF for dummies
 
 This document outlines some of the very basics of the Cross-Linguistic
-Data Format (CLDF) for researchers who want to use the data sets for
+Data Formats (CLDF) for researchers who want to use the data sets for
 analysis, comparison or plotting. CLDF is a way of organizing language
 data, in particular data sets with many different languages in it. The
 basic organisation is a set of tables, usually in csv-sheets (languages.csv, forms.csv
