@@ -1,6 +1,12 @@
 start_time <-Sys.time()
 
+###
+# PUT YOUR CODE YOU WANT TO TIME HERE #
+###
+
 Sys.sleep(time = 5)
+
+###
 
 end_time <- Sys.time()
 
