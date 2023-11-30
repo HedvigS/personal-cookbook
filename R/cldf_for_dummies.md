@@ -178,9 +178,11 @@ Structure data-sets also contain
 - CodeTable - The list of possible values for each parameter. For
   example, GB020 in Grambank is a binary feature and can take 0, 1 and ?
   whereas EA016 in the Ethnographic Atlas (D-PLACE) can take 1, 2 or 9.
-  The options are exclusive of each other for each data-point.
+  The options are often exclusive of each other for each language. There 
+  are examples of languages that are coded for more than one value, usually
+  with extra information on proportions.
 
-Good to know: for the CLDF-dataset of D-PLACE, the LanguageTable
+Good to know: for the CLDF-dataset of D-PLACE (v1 and v2), the LanguageTable
 contains a row per *society*. There is a column for the Glottocode of
 the language associated with that society.
 
@@ -325,10 +327,10 @@ TBA
 # CLLD and CLDF
 
 CLDF is a type of data-format, the set of tables etc. CLLD is a larger
-project and stands for Cross-Linguistic Linked Data. CLDF is a part of
-CLLD. CLLD also does web applications, for example
-<https://clics.clld.org/>. CLDF data interfaces smoothly with CLLD web
-applications.
+project and stands for Cross-Linguistic Linked Data. CLDF came out of 
+the CLLD-project but is distinct from it. CLLD also does web applications, 
+for example <https://clics.clld.org/>. CLDF data interfaces smoothly with 
+CLLD web applications.
 
 ## Advanced
 
