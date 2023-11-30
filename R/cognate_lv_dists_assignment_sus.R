@@ -7,14 +7,17 @@ forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvdoceanic/master
 
 unknown_cognacy <-  forms %>% 
   filter(is.na(Cognacy)) %>% 
-  dplyr::select(ID_Var1= ID, Var1 = Form)  %>% 
-  distinct()
+  dplyr::select(ID_Var1= ID, Var1 = Form)  
 
 known_cognacy <- forms %>% 
   filter(!is.na(Cognacy)) %>% 
-  dplyr::select(Var2 = Form, Var2_Cognacy = Cognacy)  %>% 
-  distinct()
-  
+  dplyr::select(Var2 = Form, Var2_Cognacy = Cognacy)  
+
+percentage_unknown <- round(nrow(unknown_cognacy)/ (nrow(known_cognacy) + nrow(unknown_cognacy) ), digits = 2)
+
+known_cognacy <- known_cognacy %>% distinct()
+unknown_cognacy <- unknown_cognacy %>% distinct()
+
 #make df to join to in loop
 dist_full <- matrix(nrow = 0, ncol = 7) %>% 
   as.data.frame() %>% 
@@ -57,7 +60,7 @@ dists[upper.tri(dists, diag = T)] <- NA
 dists_long <- dists %>%
 reshape2::melt() %>%
 filter(!is.na(value)) %>%
-filter(value <= 1)  %>%
+filter(value <= 2)  %>%
 distinct() %>%
 mutate(Var1 = as.character(Var1)) %>%
 mutate(Var2 = as.character(Var2)) %>%
@@ -83,4 +86,6 @@ different_cognate_same_form <- forms %>%
 possible_matches <- dist_full %>% 
   filter(is.na(Cognacy_2)) %>% 
   filter(!is.na(Cognacy_1)) %>% 
-  filter(lv_dist == 0)
+  filter(lv_dist <= 2)
+
+possible_matches %>% nrow()
