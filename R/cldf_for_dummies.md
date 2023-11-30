@@ -1,7 +1,7 @@
 CLDF for dummies
 ================
 Hedvig Skirgård
-2023-09-04
+2023-11-30
 
 # CLDF for dummies
 
@@ -50,6 +50,7 @@ Good things to keep in mind:
 - if you use R, keep an eye out for rcldf which is in development
 - this document is about how to navigate existing CLDF-datasets as an
   end-user, not how to make one.
+- for more on *making* CLDf-datasets, have a look in the cookbook tutorials [here]{https://github.com/cldf/cookbook/tree/master#readme}
 - there already exists a lot of documentation on how CLDF works, this
   document is not meant to be exhaustive but just a gentle entry to get
   you going. For more, see:
@@ -336,8 +337,11 @@ smoothly with clld web applications.
 ## Advanced
 
 This document is only a very basic intro. If you want to learn more, go
-to: <https://github.com/cldf/cldf/#readme>.
-
+to: 
+- [CLDF-documentation]{https://github.com/cldf/cldf/#readme}
+- [CLDF-tutorials]{https://github.com/cldf/cookbook/tree/master#readme}
+- [CLDF-website]{https://cldf.clld.org/}
+  
 ## References
 
 \[1\] Forkel, R., List, J. M., Greenhill, S. J., Rzymski, C., Bank, S.,
