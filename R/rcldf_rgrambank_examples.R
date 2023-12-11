@@ -41,11 +41,11 @@ grambank_ValueTable_binary <- rgrambank::binarise(ValueTable = grambank_ValueTab
 ##Combining with other CLDF-datasets
 
 # example glottolog
-#for some of the things you want to do with grambank, you may want to have more information about the languages than the grambank-dataset provides. For example, descriptive status of languages, endangerment level or info about the parents of dialects in grambank. If that is the case, you could also fetch glottolog-cldf which contains more meta-data on languages than grambank's LanguageTable. There is currently something wrong with fetching glottolog-cldf via rcldf, see here: https://github.com/SimonGreenhill/rcldf/issues/38 . When it's solved, I'll add in code here for using rcldf::cldf. In the meantime, we can use rgrambank::load_glottolog.
+#for some of the things you want to do with grambank, you may want to have more information about the languages than the grambank-dataset provides. For example, descriptive status of languages, endangerment level or info about the parents of dialects in grambank. If that is the case, you could also fetch glottolog-cldf which contains more meta-data on languages than grambank's LanguageTable. 
 # corresponding script in grambank-analysed make_glottolog-cldf_table.R.
 
 # get glottolog
-glottolog_cldf_object <- rgrambank::load_glottolog()
+glottolog_cldf_object <- rcldf::cldf(mdpath = "https://zenodo.org/records/8131091/files/glottolog/glottolog-cldf-v4.8.zip")
 
 version <- glottolog_cldf_object$metadata$`dc:title`
 cat(paste0("This is dataset is ", version, ".\n"))
