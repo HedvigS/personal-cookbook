@@ -3,7 +3,7 @@ library(cluster)
 library(reshape2)
 library(stringdist)
 
-forms <- read_csv("https://raw.githubusercontent.com/lexibank/abvdoceanic/master/cldf/forms.csv", show_col_types = F)
+forms <- read_csv("https://github.com/lexibank/abvd/raw/ccff2bc86c30b102cd5b95174fafb378ddc0d3eb/cldf/forms.csv", show_col_types = F)
 
 unknown_cognacy <-  forms %>% 
   filter(is.na(Cognacy)) %>% 
@@ -75,17 +75,29 @@ dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist", 
 }
 
 #different cognate same form
-different_cognate_same_form <- forms %>% 
+different_cognate_same_form_incl_multiple <- forms %>% 
   distinct(Form, Parameter_ID, Cognacy) %>% 
   group_by(Form, Parameter_ID) %>%
-  summarise(n = n()) %>% 
+  summarise(n = n(), .groups = "drop") %>% 
   filter(n > 1) 
+
+different_cognate_same_form_excl_multiple <- forms %>% 
+  filter(!str_detect(Cognacy, ",")) %>% 
+  distinct(Form, Parameter_ID, Cognacy) %>% 
+  group_by(Form, Parameter_ID) %>%
+  summarise(n = n(), .groups = "drop") %>% 
+  filter(n > 1) 
+
+cat("There are ", nrow(different_cognate_same_form_excl_multiple), " concept-form matchings ('144_toburn' - 'sunu') where there are identical forms assigned to different cognacy classes. If you also include cases of multiple cognacy (e.g. '1, 50', there are ", nrow(different_cognate_same_form_incl_multiple), " of this kind.\n", sep = "")
 
 
 #forms with missing cognacy that could probably be filled in easily
 possible_matches <- dist_full %>% 
   filter(is.na(Cognacy_2)) %>% 
   filter(!is.na(Cognacy_1)) %>% 
-  filter(lv_dist <= 2)
+  filter(lv_dist <= 0)
 
-possible_matches %>% nrow()
+cat("There are ", nrow(possible_matches 
+), " words where you could easily fill in the cognacy because they are identical to other words which are already filled in for cognacy. For example, 'tangan' for the concept hand is assigned cognacy class 18 in some languages but no cognacy in others. The amount that can be filled in like this are ",round(nrow(possible_matches 
+) / nrow(forms), 2) *100, "% of the entire dataset.\n", sep = "")
+
