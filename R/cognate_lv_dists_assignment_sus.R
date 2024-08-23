@@ -102,8 +102,14 @@ cat("There are ", nrow(different_cognate_same_form_excl_multiple), " concept-for
 possible_matches <- dist_full %>% 
   filter(is.na(Cognacy_2)) %>% 
   filter(!is.na(Cognacy_1)) %>% 
-  filter(lv_dist <= 0) %>% 
-  distinct(Var2)
+#  filter(lv_dist <= 0) %>% 
+  group_by(Var2) %>% 
+  summarise(Form_2 = paste0(unique(Form_2), collapse = "; "),
+            Cognacy_2 = paste0(unique(Cognacy_2), collapse = "; "),
+            Var1 = paste0(Var1, collapse = "; "),
+            Form_1 = paste0(Form_1, collapse = "; "),
+            Cognacy_1 = paste0(Cognacy_1, collapse = "; ")
+            )
 
 cat("There are ", nrow(possible_matches 
 ), " words where you could easily fill in the cognacy because they are identical to other words which are already filled in for cognacy. For example, 'tangan' for the concept hand is assigned cognacy class 18 in some languages but no cognacy in others. The amount that can be filled in like this are ",round(nrow(possible_matches 
