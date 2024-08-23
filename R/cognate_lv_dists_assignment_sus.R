@@ -37,6 +37,22 @@ dplyr::select(Var1 = ID, Form_1 = Form, Cognacy_1 = Cognacy)
 right <- forms %>%
 dplyr::select(Var2 = ID,Form_2 = Form, Cognacy_2 = Cognacy)
 
+
+
+#different cognate same form
+different_cognate_same_form_incl_multiple <- forms %>% 
+  distinct(Form, Parameter_ID, Cognacy) %>% 
+  group_by(Form, Parameter_ID) %>%
+  summarise(n = n(), .groups = "drop") %>% 
+  filter(n > 1) 
+
+different_cognate_same_form_excl_multiple <- forms %>% 
+  filter(!str_detect(Cognacy, ",")) %>% 
+  distinct(Form, Parameter_ID, Cognacy) %>% 
+  group_by(Form, Parameter_ID) %>%
+  summarise(n = n(), .groups = "drop") %>% 
+  filter(n > 1) 
+
 #vector of unique concepts to loop over
 Parameters_ID_unique_vector <- forms$Parameter_ID %>% unique()
 
@@ -79,20 +95,6 @@ dist_full <- full_join(dist_full, dists_long, by = c("Var1", "Var2", "lv_dist", 
 
 }
 
-#different cognate same form
-different_cognate_same_form_incl_multiple <- forms %>% 
-  distinct(Form, Parameter_ID, Cognacy) %>% 
-  group_by(Form, Parameter_ID) %>%
-  summarise(n = n(), .groups = "drop") %>% 
-  filter(n > 1) 
-
-different_cognate_same_form_excl_multiple <- forms %>% 
-  filter(!str_detect(Cognacy, ",")) %>% 
-  distinct(Form, Parameter_ID, Cognacy) %>% 
-  group_by(Form, Parameter_ID) %>%
-  summarise(n = n(), .groups = "drop") %>% 
-  filter(n > 1) 
-
 cat("There are ", nrow(different_cognate_same_form_excl_multiple), " concept-form matchings ('144_toburn' - 'sunu') where there are identical forms assigned to different cognacy classes. If you also include cases of multiple cognacy (e.g. '1, 50', there are ", nrow(different_cognate_same_form_incl_multiple), " of this kind.\n", sep = "")
 
 
@@ -100,7 +102,8 @@ cat("There are ", nrow(different_cognate_same_form_excl_multiple), " concept-for
 possible_matches <- dist_full %>% 
   filter(is.na(Cognacy_2)) %>% 
   filter(!is.na(Cognacy_1)) %>% 
-  filter(lv_dist <= 0)
+  filter(lv_dist <= 0) %>% 
+  distinct(Var2)
 
 cat("There are ", nrow(possible_matches 
 ), " words where you could easily fill in the cognacy because they are identical to other words which are already filled in for cognacy. For example, 'tangan' for the concept hand is assigned cognacy class 18 in some languages but no cognacy in others. The amount that can be filled in like this are ",round(nrow(possible_matches 
