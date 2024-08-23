@@ -3,7 +3,8 @@ library(cluster)
 library(reshape2)
 library(stringdist)
 
-forms <- read_csv("https://github.com/lexibank/abvd/raw/ccff2bc86c30b102cd5b95174fafb378ddc0d3eb/cldf/forms.csv", show_col_types = F)
+forms <- read_csv("https://github.com/lexibank/abvd/raw/ccff2bc86c30b102cd5b95174fafb378ddc0d3eb/cldf/forms.csv", show_col_types = F) %>% 
+  filter(Loan == FALSE)
 
 unknown_cognacy <-  forms %>% 
   filter(is.na(Cognacy)) %>% 
@@ -13,7 +14,11 @@ known_cognacy <- forms %>%
   filter(!is.na(Cognacy)) %>% 
   dplyr::select(Var2 = Form, Var2_Cognacy = Cognacy)  
 
-percentage_unknown <- round(nrow(unknown_cognacy)/ (nrow(known_cognacy) + nrow(unknown_cognacy) ), digits = 2)
+percentage_unknown <- round(nrow(unknown_cognacy)/ (nrow(forms)), digits = 2) 
+
+percentage_unknown <- paste0(percentage_unknown*100, "%")
+
+cat(paste0(percentage_unknown, " of forms do not have cognacy specified."))
 
 known_cognacy <- known_cognacy %>% distinct()
 unknown_cognacy <- unknown_cognacy %>% distinct()
