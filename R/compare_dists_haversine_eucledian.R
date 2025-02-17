@@ -87,16 +87,10 @@ joined <- full_join(dists_Euklides, dist_haversine, by = join_by(Var1, Var2)) %>
   left_join(Glottolog_Table_Var1) %>% 
   left_join(Glottolog_Table_Var2)
 
-range01 <- function(x){(x-min(x))/(max(x)-min(x))}
-
 joined$dist_Euklides_km_est <- joined$dist_Euklides *110
-joined$dist_Euklides_scaled <- range01(joined$dist_Euklides)
-joined$dist_haversine_scaled <- range01(joined$dist_haversine)
-
 
 joined <- joined %>% 
   tidyr::unite(Var1, Var2, col= "pair", remove = F) %>% 
-  mutate(diff = abs( dist_Euklides_scaled - dist_haversine_scaled)) %>% 
   mutate(diff_km = abs(joined$dist_Euklides_km_est - dist_haversine))
 
 joined  %>% 
@@ -114,9 +108,10 @@ world <- map_data('world', ylim=c(-56,80), margin=T)
 lakes <- map_data("lakes", col="white", border="gray", ylim=c(-56,80), margin=T)
 
 
+
 joined %>% 
 #  filter(between(diff_km, 27500, 30100)) %>% 
-#           filter(between(dist_haversine, 8750, 10000)) %>% 
+#           filter(between(dist_haversine, 8750, 10000)) %>% View()
   ggplot() +
   geom_polygon(data=world, aes(x=long, y=lat, group=group),
                colour="gray87",
@@ -146,7 +141,7 @@ joined %>%
 ggsave("output/dist_haversien_euclide_comparison_map.png")
 
 joined %>% 
-  transform(bin = cut(diff, 10)) %>% 
+  transform(bin = cut(diff_km, 10)) %>% 
   group_by(bin) %>% 		
   dplyr::summarize(n = n())		%>%
   ggplot() +
@@ -158,7 +153,11 @@ joined %>%
   ggsave("output/dist_haversien_euclide_comparison_hist.png")
   
 
-joined %>% 
+df <- joined %>% 
+  filter(dist_Euklides_km_est < 500) 
+
+df$diff_km %>% mean()
+
   ggplot() +
-  geom_point(aes(x = dist_haversine, y = diff_km), alpha = 0.2, shape = 16)
+  geom_point(aes(x = dist_haversine, y = dist_Euklides_km_est, color = diff_km), alpha = 0.2, shape = 16)
 
