@@ -93,6 +93,7 @@ joined$dist_Euklides_km_est <- joined$dist_Euklides *110
 joined$dist_Euklides_scaled <- range01(joined$dist_Euklides)
 joined$dist_haversine_scaled <- range01(joined$dist_haversine)
 
+
 joined <- joined %>% 
   tidyr::unite(Var1, Var2, col= "pair", remove = F) %>% 
   mutate(diff = abs( dist_Euklides_scaled - dist_haversine_scaled)) %>% 
@@ -100,7 +101,7 @@ joined <- joined %>%
 
 joined  %>% 
   ggplot() +
-  geom_point(aes(dist_haversine, dist_Euklides_km_est, color = diff ), alpha = 0.2, shape =16) +
+  geom_point(aes(dist_haversine, dist_Euklides_km_est , color = diff_km ), alpha = 0.2, shape =16) +
   theme_classic() +   
   coord_fixed() +
   viridis::scale_color_viridis(option = "inferno", end = 0.9)
@@ -114,7 +115,8 @@ lakes <- map_data("lakes", col="white", border="gray", ylim=c(-56,80), margin=T)
 
 
 joined %>% 
-  filter(dist_haversine <= 100) %>% 
+#  filter(between(diff_km, 27500, 30100)) %>% 
+#           filter(between(dist_haversine, 8750, 10000)) %>% 
   ggplot() +
   geom_polygon(data=world, aes(x=long, y=lat, group=group),
                colour="gray87",
@@ -136,17 +138,17 @@ joined %>%
     axis.ticks = element_blank() ) +
   geom_segment(aes(x = Longitude_Var1, y = Latitude_Var1, 
                    xend = Longitude_Var2, yend = Latitude_Var2, color = diff),
-                   alpha = 1, size = 2) +
-#  geom_point(aes(x = Longitude_Var1, y = Latitude_Var1), colour = "blue", size = 0.5) +  # First set of points
-#  geom_point(aes(x = Longitude_Var2, y = Latitude_Var2), colour = "blue", size = 0.5) +    # Second set of points
+                   alpha = 0.04, size = 1) +
+  geom_point(aes(x = Longitude_Var1, y = Latitude_Var1), colour = "blue", size = 0.5) +  # First set of points
+  geom_point(aes(x = Longitude_Var2, y = Latitude_Var2), colour = "blue", size = 0.5) +    # Second set of points
   viridis::scale_color_viridis(option = "inferno", end = 0.9)
 
 ggsave("output/dist_haversien_euclide_comparison_map.png")
 
 joined %>% 
-  transform(bin = cut(diff, 40)) %>% 
+  transform(bin = cut(diff, 10)) %>% 
   group_by(bin) %>% 		
-  dplyr::summarize(n = n())		%>% 
+  dplyr::summarize(n = n())		%>%
   ggplot() +
   geom_bar(aes(x = bin, y = n, fill = bin), stat = "identity") +
   theme_minimal() +
@@ -155,13 +157,8 @@ joined %>%
   
   ggsave("output/dist_haversien_euclide_comparison_hist.png")
   
-  
-x <-  joined %>% 
-  filter(dist_haversine <= 100)
-
-x$diff_km %>% mean()
 
 joined %>% 
   ggplot() +
-  geom_point(aes(x = dist_haversine, y = diff), alpha = 0.2, shape = 16)
+  geom_point(aes(x = dist_haversine, y = diff_km), alpha = 0.2, shape = 16)
 
