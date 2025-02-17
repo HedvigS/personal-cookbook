@@ -98,9 +98,6 @@ joined <- joined %>%
   mutate(diff = abs( dist_Euklides_scaled - dist_haversine_scaled)) %>% 
   mutate(diff_km = abs(joined$dist_Euklides_km_est - dist_haversine))
 
-
-joined$diff_km %>% mean()
-
 joined  %>% 
   ggplot() +
   geom_point(aes(dist_haversine, dist_Euklides_km_est, color = diff ), alpha = 0.2, shape =16) +
@@ -117,6 +114,7 @@ lakes <- map_data("lakes", col="white", border="gray", ylim=c(-56,80), margin=T)
 
 
 joined %>% 
+  filter(dist_haversine <= 100) %>% 
   ggplot() +
   geom_polygon(data=world, aes(x=long, y=lat, group=group),
                colour="gray87",
@@ -138,15 +136,15 @@ joined %>%
     axis.ticks = element_blank() ) +
   geom_segment(aes(x = Longitude_Var1, y = Latitude_Var1, 
                    xend = Longitude_Var2, yend = Latitude_Var2, color = diff),
-                   alpha = 0.006) +
-  geom_point(aes(x = Longitude_Var1, y = Latitude_Var1), colour = "blue", size = 0.5) +  # First set of points
-  geom_point(aes(x = Longitude_Var2, y = Latitude_Var2), colour = "blue", size = 0.5) +    # Second set of points
+                   alpha = 1, size = 2) +
+#  geom_point(aes(x = Longitude_Var1, y = Latitude_Var1), colour = "blue", size = 0.5) +  # First set of points
+#  geom_point(aes(x = Longitude_Var2, y = Latitude_Var2), colour = "blue", size = 0.5) +    # Second set of points
   viridis::scale_color_viridis(option = "inferno", end = 0.9)
 
 ggsave("output/dist_haversien_euclide_comparison_map.png")
 
 joined %>% 
-  transform(bin = cut(diff_km, 20)) %>% 
+  transform(bin = cut(diff, 40)) %>% 
   group_by(bin) %>% 		
   dplyr::summarize(n = n())		%>% 
   ggplot() +
@@ -156,3 +154,14 @@ joined %>%
   viridis::scale_fill_viridis(option = "inferno", end = 0.9, discrete = T)
   
   ggsave("output/dist_haversien_euclide_comparison_hist.png")
+  
+  
+x <-  joined %>% 
+  filter(dist_haversine <= 100)
+
+x$diff_km %>% mean()
+
+joined %>% 
+  ggplot() +
+  geom_point(aes(x = dist_haversine, y = diff), alpha = 0.2, shape = 16)
+
