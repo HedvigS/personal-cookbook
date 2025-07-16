@@ -65,7 +65,7 @@ p <- suppressWarnings(
 )
 }
 
-ggarrange(
+p_all <- ggarrange(
     suppressWarnings(good_plot()),
     suppressWarnings(good_plot()),
     suppressWarnings(good_plot()),
@@ -78,7 +78,7 @@ ggarrange(
 )
   
   
-suppressWarnings(  ggsave("good_plots.png", width = 25, height = 48) )
+suppressWarnings(  ggsave(plot = p_all , filename = "good_plots.png", width = 25, height = 48, dpi = 200) )
 
 
 
