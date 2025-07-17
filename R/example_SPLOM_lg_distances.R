@@ -15,18 +15,24 @@ library(rcldf)
 #install.packages("cluster")
 library(cluster)
 
+#remotes::install_github("annagraff/densify")
+library(densify)
+
 #install.packages("sf")       # for reading spatial data
 library(sf)
 library(fields)
 library(ape)
 library(cluster)
-
+library(GGally)
 library(randomcoloR)
+library(missForest)
+#install.packages("Amelia")
+library(Amelia)
 
-# fetching Grambank v1.0.3 from Zenodo using rcldf (requires internet)
-GB_rcldf_obj <- rcldf::cldf("https://zenodo.org/record/7844558/files/grambank/grambank-v1.0.3.zip", load_bib = F)
+##############################################
+# A S H E R & M O S E L E Y   P O LY G O N S #
+##############################################
 
-#polygons
 if(!file.exists("output/asher2007/cldf/traditional/languages.geojson")){
 SH.misc::get_zip_from_url("https://zenodo.org/records/15287258/files/Glottography/asher2007world-v1.0.0.zip", exdir = "output/asher2007")
 }
@@ -71,8 +77,13 @@ asher2007_polygons_dists_long <- d_matrix %>%
 #}
 
 
-glottolog_ValueTable <- readr::read_csv("https://github.com/glottolog/glottolog-cldf/raw/refs/tags/v5.0/cldf/values.csv", 
-                  show_col_types = F) %>% 
+############################################
+### G L O T T O L O G   P O I N T S ########
+############################################
+glottolog_ValueTable_long <- readr::read_csv("https://github.com/glottolog/glottolog-cldf/raw/refs/tags/v5.0/cldf/values.csv", 
+                  show_col_types = F)  
+  
+  glottolog_ValueTable <- glottolog_ValueTable_long %>% 
   reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value")
 
 glottolog_LanguageTable <-  readr::read_csv("https://github.com/glottolog/glottolog-cldf/raw/refs/tags/v5.0/cldf/languages.csv",
@@ -109,7 +120,10 @@ glottolog_dists_euclide_long <- glottolog_dists_euclide %>%
   rename(glottolog_points_dist_euclide = value) %>% 
   filter(Var1 != Var2)
 
-#Trees
+############################################
+####### G L O B A L   T R E E ##############
+############################################
+
 tree <- ape::read.nexus(file = "example_data/global-language-tree-MCC-labelled.tree")
 
 tree$tip.label <-  tree$tip.label %>% substr(1, 8) 
@@ -121,18 +135,109 @@ tree_dists <- dist_matrix %>%
   rename(global_tree_dist = value) %>% 
   filter(Var1 != Var2)
 
+############################################
+########## G R A M B A N K #################
+############################################
 
+# fetching Grambank v1.0.3 from Zenodo using rcldf (requires internet)
+GB_rcldf_obj <- rcldf::cldf("https://zenodo.org/record/7844558/files/grambank/grambank-v1.0.3.zip", load_bib = F)
 
 #grambank distances
+GB_all_long <- GB_rcldf_obj$tables$ValueTable %>% 
+  dplyr::mutate(Value = ifelse(is.na(Value), "?", Value))
+  
+GB_all_long_reduced <- GB_all_long %>% 
+  rgrambank::reduce_ValueTable_to_unique_glottocodes(LanguageTable = GB_rcldf_obj$tables$LanguageTable, merge_dialects = T, method = "singular_least_missing_data", replace_missing_language_level_ID = T, treat_question_mark_as_missing = T)
 
-GB <- GB_rcldf_obj$tables$ValueTable %>% 
-  filter(Value != "?") %>% 
-  mutate(Value = as.numeric(Value)) %>% 
+#different kinds of cropping missing data
+GB_wide_all <- GB_all_long_reduced %>% 
   reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") %>% 
   column_to_rownames("Language_ID") %>% 
   as.matrix() 
 
-GB_dists <- GB %>% 
+GB_wide_cropped_75 <- GB_all_long_reduced %>% 
+  rgrambank::crop_missing_data() %>% 
+  reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") %>% 
+  column_to_rownames("Language_ID") %>% 
+  as.matrix() 
+
+GB_all_densified <- rgrambank::densify_GB(Grambank_ValueTable = GB_all_long_reduced,
+                                          Glottolog_ValueTable = glottolog_ValueTable_long, verbose = F) 
+
+#imputation full raw
+missing_prop <- function(df){
+  prop <- sum(is.na(df)) / (sum(!is.na(df)) + sum(is.na(df))) 
+  paste0(round(x = prop, digits = 2) * 100, "%")
+  
+}
+
+missing_prop(GB_wide_all)
+
+GB_wide_all_imputed <- GB_wide_all %>% 
+  as.data.frame() %>%
+  mutate_all(as.factor) %>% 
+  missForest::missForest() 
+
+missing_prop(GB_wide_cropped_75)
+
+GB_wide_cropped_75_imputed <- GB_wide_cropped_75 %>%
+  as.data.frame() %>%
+  mutate_all(as.factor) %>% 
+  missForest::missForest() 
+
+missing_prop(GB_all_densified[[1]] )
+
+GB_wide_densified_imputed <- GB_all_densified[[1]] %>% 
+  column_to_rownames("Language_ID") %>% 
+  as.data.frame() %>%
+  mutate_all(as.factor) %>% 
+  missForest::missForest() 
+
+# GBI
+GBI <- rgrambank::make_GBI(ValueTable = GB_all_long, 
+                    recode_patterns_full = read.delim("example_data/feature-recode-patterns.csv", sep = ","),
+                    all_decisions = read.delim( "example_data/decisions-log.csv", sep = ","))
+
+GBI_log <- GBI$logicalGBI 
+GBI_log[GBI_log == "NA" | GBI_log == "?"] <- NA
+
+GBI_log_reduced <- GBI_log %>% 
+  reshape2::melt(id.vars = "Language_ID") %>% 
+  dplyr::rename(Parameter_ID = variable, Value = value) %>%
+  rgrambank::reduce_ValueTable_to_unique_glottocodes(LanguageTable = GB_rcldf_obj$tables$LanguageTable,
+    GlottologLanguageTable = glottolog_LanguageTable,
+                                                     merge_dialects = T, 
+                                                     method = "singular_least_missing_data", 
+                                                     replace_missing_language_level_ID = T, 
+                                                     treat_question_mark_as_missing = T) %>% 
+  reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") %>% 
+  column_to_rownames("Language_ID") %>% 
+  as.matrix() 
+  
+
+GBI_stat <- GBI$statisticalGBI     
+GBI_stat[GBI_stat == "NA" | GBI_stat == "?"] <- NA
+
+GBI_stat_reduced <- GBI_stat %>% 
+reshape2::melt(id.vars = "Language_ID") %>% 
+  dplyr::rename(Parameter_ID = variable, Value = value) %>%
+  rgrambank::reduce_ValueTable_to_unique_glottocodes(LanguageTable = GB_rcldf_obj$tables$LanguageTable,
+                                                     GlottologLanguageTable = glottolog_LanguageTable,
+                                                     merge_dialects = T, 
+                                                     method = "singular_least_missing_data", 
+                                                     replace_missing_language_level_ID = T, 
+                                                     treat_question_mark_as_missing = T) %>% 
+  reshape2::dcast(Language_ID ~ Parameter_ID, value.var = "Value") %>% 
+  column_to_rownames("Language_ID") %>% 
+  as.matrix() 
+
+
+
+
+
+
+
+GB_dists <- GB_wide %>% 
       cluster::daisy(metric = "gower", warnBin = F)  %>% 
   as.matrix()
   
