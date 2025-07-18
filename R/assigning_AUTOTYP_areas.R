@@ -12,19 +12,13 @@ pacman::p_load(
 
 options(tidyverse.quiet = TRUE)
 
-#combining the tables languages and values from glottolog_df-cldf into one wide dataframe.
-#this can be replaced with any list of Language_IDs, long and lat
-glottolog_df_fn <- "output_tables/cldf_wide_df.tsv"
-
-if (!file.exists(glottolog_df_fn)) {
-source("make_lang_values_wide_fetch_online.R") }
-
-glottolog_df <- read_tsv(glottolog_df_fn, show_col_types = F) %>% 
-  dplyr::select(Language_ID, Longitude, Latitude)
+glottolog_df <- readr::read_csv("https://github.com/glottolog/glottolog-cldf/raw/refs/tags/v5.0/cldf/languages.csv", show_col_types = F) %>% 
+  dplyr::select(Language_ID = Glottocode, Longitude, Latitude) %>% 
+  dplyr::filter(!is.na(Longitude))
 
 ##Adding in areas of linguistic contact from AUTOTYP
 
-AUTOTYP <- read_csv("https://raw.githubusercontent.com/autotyp/autotyp-data/master/data/csv/Register.csv") %>% 
+AUTOTYP <- read_csv("https://raw.githubusercontent.com/autotyp/autotyp-data/master/data/csv/Register.csv", show_col_types = F) %>% 
   dplyr::select(Language_ID = Glottocode, Area, Longitude, Latitude) %>% 
   group_by(Language_ID) %>% 
   sample_n(1) #when a language is assigned to more than one area, pick randomly.
@@ -38,15 +32,15 @@ rownames(lgs_with_known_area) <- AUTOTYP[!is.na(AUTOTYP$Area),]$Language_ID
 
 known_areas <- AUTOTYP %>% 
   dplyr::filter(!is.na(Area)) %>% 
-  dplyr::select(Language_ID, Area) %>% 
-  distinct() %>% 
-  dplyr::select(AUTOTYP_Language_ID = Language_ID, everything())
+  dplyr::select(AUTOTYP_Language_ID = Language_ID, Area) %>% 
+  dplyr::distinct() 
 
 rm(AUTOTYP)
 
-lgs_with_unknown_area <- as.matrix(glottolog_df[,c("Longitude","Latitude")])
-rownames(lgs_with_unknown_area) <- glottolog_df$Language_ID
-
+lgs_with_unknown_area <- glottolog_df %>% 
+  column_to_rownames("Language_ID") %>% 
+  as.matrix()
+  
 # For missing, find area of closest langauge
 atDist <- rdist.earth(lgs_with_known_area,lgs_with_unknown_area, miles = F)
 
@@ -57,10 +51,10 @@ df_matched_up <- as.data.frame(unlist(apply(atDist, 2, function(x){names(which.m
 
 glottolog_df_with_AUTOTYP <- df_matched_up %>% 
   tibble::rownames_to_column("Language_ID") %>%
-  full_join(known_areas) %>% 
-  right_join(glottolog_df) %>% 
+  full_join(known_areas, by = "AUTOTYP_Language_ID") %>% 
+  right_join(glottolog_df, relationship = "many-to-many", by = "Language_ID") %>% 
   dplyr::select(-AUTOTYP_Language_ID) %>% 
   rename(AUTOTYP_area = Area) 
 
 glottolog_df_with_AUTOTYP %>% 
-  write_tsv("output_tables/glottolog_AUTOTYP_areas.tsv")
+  write_tsv("output/output_tables/glottolog_AUTOTYP_areas.tsv")
