@@ -22,6 +22,7 @@ library(densify)
 library(sf)
 library(fields)
 library(ape)
+library(phytools)
 library(cluster)
 library(GGally)
 library(randomcoloR)
@@ -81,7 +82,7 @@ d_matrix[upper.tri(d_matrix, diag = F)] <- NA
 asher2007_polygons_dists_long <- d_matrix %>% 
   reshape2::melt() %>% 
   dplyr::filter(!is.na(value)) %>% 
-  dplyr::rename(asher2007_polygons_dists = value) %>% 
+  dplyr::rename("asher2007\n polygons\n dists" = value) %>% 
   filter(Var1 != Var2)
 
 #polygons
@@ -123,7 +124,7 @@ glottolog_dists_haversine_wide[upper.tri(glottolog_dists_haversine_wide, diag = 
 glottolog_dists_haversine_long <- glottolog_dists_haversine_wide %>% 
   reshape2::melt() %>% 
   dplyr::filter(!is.na(value)) %>% 
-  rename(glottolog_points_dist_haversine = value) %>% 
+  rename("glottolog\n points\n dist haversine" = value) %>% 
   filter(Var1 != Var2)
 
 
@@ -137,7 +138,7 @@ glottolog_dists_euclide[upper.tri(glottolog_dists_euclide, diag = F)] <- NA
 glottolog_dists_euclide_long <- glottolog_dists_euclide %>% 
   reshape2::melt() %>% 
   dplyr::filter(!is.na(value)) %>% 
-  rename(glottolog_points_dist_euclide = value) %>% 
+  rename("glottolog\n points\n dist euclide" = value) %>% 
   filter(Var1 != Var2)
 
 ############################################
@@ -155,7 +156,7 @@ dist_matrix[upper.tri(dist_matrix, diag = F)] <- NA
 tree_dists <- dist_matrix %>% 
   reshape2::melt() %>% 
   dplyr::filter(!is.na(value)) %>% 
-  rename(global_tree_dist = value) %>% 
+  rename("global\n tree\n (Bouckaert) dist" = value) %>% 
   filter(Var1 != Var2)
 
 ############################################
@@ -375,10 +376,9 @@ fun_PCA_dists <- function(df_wide, value_name){
   # Convert to numeric matrix
   df_wide_num <- matrix(as.numeric(df_wide), nrow = nrow(df_wide), ncol = ncol(df_wide))
   
+  rownames(df_wide_num) <- rownames(df_wide)
+  
   pca_obj <-  prcomp(x = df_wide_num)
-  
-  pca_obj
-  
   
   #testing to evaluate the optimal number of components
   ev <- eigen(cor(df_wide_num)) # get eigenEstimates
@@ -405,13 +405,78 @@ fun_PCA_dists <- function(df_wide, value_name){
     reshape2::melt() %>% 
     filter(Var1 != Var2) %>% 
     dplyr::filter(!is.na(value))
+
+  value_name <- paste0(value_name, "_", optimal_components , "/", ncol(df_wide))
   
   colnames(dists_long) <- c("Var1", "Var2", value_name)
   dists_long
   
   
 }
+
+################################
+fun_phyloPCA_dists <- function(df_wide, value_name){
+
+#  df_wide <- GB_cropped_75_imputed
+    
+tree_spec <- tree %>% ape::keep.tip(tree$tip.label[tree$tip.label %in% rownames(df_wide)])
+df_wide <- df_wide[rownames(df_wide) %in% tree_spec$tip.label,] 
+
+if(any(class(df_wide) == "data.frame")){
+  df_wide <- df_wide %>% 
+    dplyr::mutate(across(everything(), ~ as.numeric(.))) %>% 
+    as.matrix()
+}
+
+# Convert to numeric matrix
+df_wide_num <- matrix(as.numeric(df_wide), nrow = nrow(df_wide), ncol = ncol(df_wide))
+
+rownames(df_wide_num) <- rownames(df_wide)
   
+# Run phylogenetic PCA
+phylo_pca <- phytools::phyl.pca(tree = tree_spec, Y = df_wide_num, method = "BM", mode = "corr")
+
+# Extract phylogenetic eigenvalues
+eig_vals <- phylo_pca$Eval  # Already variance explained per PC
+
+# Parallel analysis using nFactors
+ap <- nFactors::parallel(
+  subject = nrow(df_wide_num),
+  var = ncol(df_wide_num),
+  rep = 100,
+  cent = 0.05
+)
+
+# nScree test with phylogenetic PCA eigenvalues
+nS <- nFactors::nScree(x = eig_vals, aparallel = ap$eigen$qevpea)
+
+# Number of components where observed eigenvalues exceed parallel null
+optimal_components <- sum(phylo_pca$Eval > ap$eigen$qevpea)
+
+    cat(paste0("The optimal numer of components are ", optimal_components, ".\n",
+               "The number of input variables were ", ncol(df_wide_num) , ".\n"))
+
+    # Distance matrix in reduced PCA space
+pca_dist <- phylo_pca$S[, 1:optimal_components] %>%
+  cluster::daisy(metric = "gower", warnBin = FALSE) %>%
+  as.matrix()
+rownames(pca_dist ) <- rownames(df_wide)
+colnames(pca_dist ) <- rownames(df_wide)
+
+#the distances are symmetrical, so we don't need the full distance matrix of upper and lower triangles, but just one of them. setting the upper one to NA, which we will later filter out.
+pca_dist [upper.tri(pca_dist , diag = F)] <- NA
+
+dists_long <- pca_dist  %>% 
+  reshape2::melt() %>% 
+  filter(Var1 != Var2) %>% 
+  dplyr::filter(!is.na(value))
+
+value_name <- paste0(value_name, "_\n", optimal_components , "/", ncol(df_wide))
+
+colnames(dists_long) <- c("Var1", "Var2", value_name)
+dists_long
+
+}
 
 GB_wide_all_imputed_PCA <- GB_wide_all_imputed  %>% fun_PCA_dists(value_name = "GB_all\n_imputed\n_PCA")
 GB_cropped_75_imputed_PCA <- GB_cropped_75_imputed  %>% fun_PCA_dists(value_name = "GB_cropped_75\n_imputed\n_PCA")
@@ -426,47 +491,130 @@ GBI_stat_wide_cropped_75_imputed_PCA <- GBI_stat_wide_cropped_75_imputed  %>% fu
 GBI_stat_wide_cropped_densified_imputed_PCA <- GBI_stat_wide_cropped_densified_imputed  %>% fun_PCA_dists(value_name = "GBI_stat\n_cropped_densified\n_imputed\n_PCA")
 
 
+GB_wide_all_imputed_phyloPCA <- GB_wide_all_imputed  %>% fun_phyloPCA_dists(value_name = "GB_all\n_imputed\n_phyloPCA")
+GB_cropped_75_imputed_phyloPCA <- GB_cropped_75_imputed  %>% fun_phyloPCA_dists(value_name = "GB_cropped_75\n_imputed\n_phyloPCA")
+GB_cropped_densified_imputed_phyloPCA <- GB_cropped_densified_imputed  %>% fun_phyloPCA_dists(value_name = "GB_cropped\n_densified\n_imputed\n_phyloPCA")
+
+GBI_log_reduced_wide_imputed_phyloPCA <- GBI_log_reduced_wide_imputed  %>% fun_phyloPCA_dists(value_name = "GBI_log\n_imputed\n_phyloPCA")
+GBI_log_wide_cropped_75_imputed_phyloPCA <- GBI_log_wide_cropped_75_imputed  %>% fun_phyloPCA_dists(value_name = " GBI_log\n_cropped_75\n_imputed\n_phyloPCA")
+GBI_log_wide_cropped_densified_imputed_phyloPCA <- GBI_log_wide_cropped_densified_imputed  %>% fun_phyloPCA_dists(value_name = "GBI_log\n_cropped_densified\n_imputed\n_phyloPCA")
+
+GBI_stat_reduced_wide_imputed_phyloPCA <- GBI_stat_reduced_wide_imputed  %>% fun_phyloPCA_dists(value_name = "GBI_stat\n_imputed\n_phyloPCA")
+GBI_stat_wide_cropped_75_imputed_phyloPCA <- GBI_stat_wide_cropped_75_imputed  %>% fun_phyloPCA_dists(value_name = " GBI_stat\n_cropped_75\n_imputed\n_phyloPCA")
+GBI_stat_wide_cropped_densified_imputed_phyloPCA <- GBI_stat_wide_cropped_densified_imputed  %>% fun_phyloPCA_dists(value_name = "GBI_stat\n_cropped_densified\n_imputed\n_phyloPCA")
+
+
 
 
 
 dists_joined <- asher2007_polygons_dists_long %>% 
   full_join(glottolog_dists_euclide_long, by = c("Var1", "Var2")) %>% 
   full_join(glottolog_dists_haversine_long, by = c("Var1", "Var2")) %>% 
- full_join(tree_dists, by = c("Var1", "Var2")) %>%
+  
+  full_join(tree_dists, by = c("Var1", "Var2")) %>%
+  
   full_join(GB_dists_all_gower, by = c("Var1", "Var2")) %>% 
   full_join(GB_cropped_75_gower, by = c("Var1", "Var2"))  %>% 
   full_join(GB_cropped_densified_gower , by = c("Var1", "Var2"))  %>% 
+  
   full_join(GB_wide_all_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GB_cropped_75_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GB_cropped_densified_imputed_gower , by = c("Var1", "Var2"))  %>% 
+  
   full_join(GBI_log_reduced_wide_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_75_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_densified_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_reduced_wide_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_75_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_densified_imputed_gower , by = c("Var1", "Var2"))  %>% 
+  
   full_join(GBI_stat_reduced_wide_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_wide_cropped_75_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_wide_cropped_densified_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_reduced_wide_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_wide_cropped_75_imputed_gower , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_wide_cropped_densified_imputed_gower , by = c("Var1", "Var2")) %>% 
+  
   full_join(GB_wide_all_imputed_PCA , by = c("Var1", "Var2"))  %>% 
   full_join(GB_cropped_75_imputed_PCA , by = c("Var1", "Var2"))  %>% 
   full_join(GB_cropped_densified_imputed_PCA , by = c("Var1", "Var2"))  %>% 
+ 
   full_join(GBI_log_reduced_wide_imputed_PCA , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_75_imputed_PCA , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_log_wide_cropped_densified_imputed_PCA , by = c("Var1", "Var2"))  %>% 
+  
   full_join(GBI_stat_reduced_wide_imputed_PCA , by = c("Var1", "Var2"))  %>% 
   full_join(GBI_stat_wide_cropped_75_imputed_PCA , by = c("Var1", "Var2"))  %>% 
-  full_join(GBI_stat_wide_cropped_densified_imputed_PCA , by = c("Var1", "Var2")) 
+  full_join(GBI_stat_wide_cropped_densified_imputed_PCA , by = c("Var1", "Var2")) %>% 
+  
+  full_join(GB_wide_all_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+  full_join(GB_cropped_75_imputed_phyloPCA, by = c("Var1", "Var2")) %>% 
+  full_join(GB_cropped_densified_imputed_phyloPCA, by = c("Var1", "Var2")) %>% 
 
+  full_join(GBI_log_reduced_wide_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+  full_join(GBI_log_wide_cropped_75_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+  full_join(GBI_log_wide_cropped_densified_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+
+  full_join(GBI_stat_reduced_wide_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+  full_join(GBI_stat_wide_cropped_75_imputed_phyloPCA , by = c("Var1", "Var2")) %>% 
+  full_join(GBI_stat_wide_cropped_densified_imputed_phyloPCA , by = c("Var1", "Var2"))  
+
+col_vector <- c("#b9f0b9",
+  "#a1c9ab",
+  "#7bd191",
+  
+  "#7bb5d1",
+
+  "#e3d3a8", 
+  "#f5f0bf", 
+  "#edc072",
+  "#e0a394",
+  "#c9a499",
+  "#f7a483",
+  
+  "#f3c1f5",
+  "#e6cbf5",
+  "#f5a6f5",
+  "#d5a8ed",
+  "#c3a3cf",
+  "#bd7be0",
+  
+  "#7bcbe0",
+  "#b9e2ed",
+  "#a2e3eb",
+  "#5b98a8",
+  "#9ad0ed",
+  "#5098bf",
+  
+  "#ed7bc2", #PCA
+  "#b36d98",
+  "#d186cd",
+  
+  "#c5d186",
+  "#f5e173",
+  "#fae1a2",
+  
+  "#a2fae3",
+  "#a5d9cb",
+  "#8dd6ac",
+  
+  "#b398ed", #phyloPCA
+  "#9a8fb3",
+  "#c1adf0",
+  
+  "#f0e5ad",
+  "#f0cead",
+  "#f5b576",
+  
+  "#c7e68a",
+  "#97d17b",
+  "#aac79d"
+  )
 
 p <- dists_joined %>%
   dplyr::filter(!is.na(`GB_\n_all_gower`)) %>% 
   sample_n(6400) %>% 
   dplyr::select(-Var1, -Var2) %>% 
-  SH.misc::coloured_SPLOM(herringbone = T)
+  SH.misc::coloured_SPLOM(herringbone = T, pair_colors = col_vector)
 
-
-ggsave(plot = p, filename= "test.png", height = 30, width = 30)
+ggsave(plot = p, filename= "SPLOM_distances_lgs.png", height = 45, width = 45)
