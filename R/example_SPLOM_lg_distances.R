@@ -584,37 +584,39 @@ col_vector <- c("#b9f0b9",
   "#a2e3eb",
   "#5b98a8",
   "#9ad0ed",
-  "#5098bf",
+  "#5098bf"#,
   
-  "#ed7bc2", #PCA
-  "#b36d98",
-  "#d186cd",
-  
-  "#c5d186",
-  "#f5e173",
-  "#fae1a2",
-  
-  "#a2fae3",
-  "#a5d9cb",
-  "#8dd6ac",
-  
-  "#b398ed", #phyloPCA
-  "#9a8fb3",
-  "#c1adf0",
-  
-  "#f0e5ad",
-  "#f0cead",
-  "#f5b576",
-  
-  "#c7e68a",
-  "#97d17b",
-  "#aac79d"
-  )
+#  "#ed7bc2", #PCA
+#  "#b36d98",
+#  "#d186cd",
+#  
+#  "#c5d186",
+#  "#f5e173",
+#  "#fae1a2",
+#  
+#  "#a2fae3",
+# "#a5d9cb",
+# "#8dd6ac",
+# 
+#  "#b398ed", #phyloPCA
+# "#9a8fb3",
+# "#c1adf0",
+#  
+#  "#f0e5ad",
+#  "#f0cead",
+#  "#f5b576",
+#  
+#  "#c7e68a",
+#  "#97d17b",
+#  "#aac79d"
+#  
+)
 
-p <- dists_joined %>%
+p <- dists_joined %>% 
+  .[,1:23] %>% 
   dplyr::filter(!is.na(`GB_\n_all_gower`)) %>% 
   sample_n(6400) %>% 
   dplyr::select(-Var1, -Var2) %>% 
   SH.misc::coloured_SPLOM(herringbone = T, pair_colors = col_vector)
 
-ggsave(plot = p, filename= "SPLOM_distances_lgs.png", height = 45, width = 45)
+ggsave(plot = p, filename= "SPLOM_distances_lgs.png", height = 25, width = 25)
