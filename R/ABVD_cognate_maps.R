@@ -10,13 +10,15 @@ LanguageTable <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0
                   show_col_types = F) %>% 
   dplyr::select(ID, Name, Longitude, Latitude, Family)
 
+concept <- "125_salt"
+
 forms_raw <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0dfce53e2ccb41b32742784c5/cldf/forms.csv", 
                   show_col_types = F) %>% 
   dplyr::filter(Loan == FALSE) %>% 
   dplyr::filter(!is.na(Cognacy)) %>% 
   dplyr::filter(!str_detect(Cognacy, "\\?")) %>% 
   dplyr::select(Language_ID, Parameter_ID, Form, Cognacy, Value) %>% 
-  dplyr::filter(Parameter_ID == "129_moon") 
+  dplyr::filter(Parameter_ID == concept) 
 
 forms <- forms_raw %>% 
   dplyr::mutate(Cognacy_sep = stringr::str_split(Cognacy, ",") %>% map(trimws)) %>% 
@@ -70,9 +72,10 @@ p <- SH.misc::basemap_EEZ(south = "down", xlim = c(35, 260), ylim = c(-60, 35)) 
   scale_color_identity() +
   scale_fill_identity() +
   scale_size_continuous(range = c(3, 8)) +
-  ggtitle("Moon in the Austronesian Basic Vocabulary Database", subtitle = "(version = 79a8979e6064e0a0dfce53e2ccb41b32742784c5)")
+  ggtitle(label = paste0(concept, " in the Austronesian Basic Vocabulary Database"), 
+          subtitle = "(version = 79a8979e6064e0a0dfce53e2ccb41b32742784c5)")
 
 p
 
-ggsave(plot = p, filename = "output/ABVD_moon_map.png", width = 14, height = 6)  
+ggsave(plot = p, filename = paste0("output/ABVD_", concept, "_map.png"), width = 14, height = 6)  
 
