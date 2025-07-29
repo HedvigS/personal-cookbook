@@ -94,7 +94,7 @@ p <- SH.misc::basemap_EEZ(south = "down", xlim = c(35, 260), ylim = c(-60, 35)) 
            Each point is a wordlist of a given language, coloured by cognacy (word relatedness).
            If a word is assigned more than one cognacy class (e.g. '5, 12'), then the most common class in the overall dataset is chosen. 
            Non-numeric cognacy is ignored (e.g. '1?' or 'x'). Labels are plotted for cognacy groups with more than 3 members. 
-           Labels represent the most common word for the group and they appear in the middle of their points.
+           Labels represent the most common word for the group and they appear in the middle of their points, or near there.
            Areas with a lot of data (e.g. Vanuatu, Papua New Guinea), sadly cannot be fully displayed in this map. 
            For more information about the data, please visit https://abvd.eva.mpg.de/austronesian/ or https://github.com/lexibank/abvd/ ",
            
