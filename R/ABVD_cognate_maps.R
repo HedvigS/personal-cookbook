@@ -5,13 +5,16 @@ library(magrittr)
 library(tidyr)
 library(ggplot2)
 library(ggrepel)
-
+library(purrr)
 
 LanguageTable <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0dfce53e2ccb41b32742784c5/cldf/languages.csv", 
                   show_col_types = F) %>% 
   dplyr::select(ID, Name, Longitude, Latitude, Family)
 
-concept <- "129_moon"
+#125_salt
+#"71_tostabpierce"
+#"129_moon"
+concept <- "71_tostabpierce"
 title_concept <- stringr::str_extract(concept, "(?<=_)\\w+") %>% 
   str_to_title()
 
@@ -28,7 +31,7 @@ forms_raw <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0dfce
 
 forms <- forms_raw %>% 
   dplyr::filter(Parameter_ID == concept) %>% 
-  dplyr::mutate(Cognacy_sep = stringr::str_split(Cognacy, ",") %>% map(trimws)) %>% 
+  dplyr::mutate(Cognacy_sep = stringr::str_split(Cognacy, ",") %>% purrr::map(trimws)) %>% 
   tidyr::unnest(Cognacy_sep) %>% 
   dplyr::group_by(Parameter_ID, Cognacy_sep) %>% 
   dplyr::mutate(n = n()) %>% 
@@ -73,9 +76,9 @@ forms_main_label_df <- forms %>%
   )
 
 p <- SH.misc::basemap_EEZ(south = "down", xlim = c(35, 260), ylim = c(-60, 35))  +
-  geom_jitter(data = forms, mapping = aes(x = Longitude, y = Latitude, color = Color, fill = Color), 
-             alpha = 0.6, shape= 21, size = 3, width = 1.5, height = 1.5) +
-  ggrepel::geom_label_repel(data = forms_main_label_df, alpha = 0.6,
+  geom_jitter(data = forms, mapping = aes(x = Longitude, y = Latitude, fill = Color), 
+             alpha = 0.6, shape= 21, size = 3, width = 1.5, height = 1.5, color = "grey30") +
+  ggrepel::geom_label_repel(data = forms_main_label_df, alpha = 0.7,
                             max.overlaps = 60, segment.color = NA,
                             mapping = aes(x = long_middle, y = lat_middle, label = Form_main, fill = Color, size = n)) +
   scale_color_identity() +
