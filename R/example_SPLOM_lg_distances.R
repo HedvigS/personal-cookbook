@@ -62,7 +62,7 @@ p_world_asher2007 <- polygons %>%
   ggplot2::ggplot() +
   ggplot2::geom_sf(aes(fill = cldf.languageReference), alpha = 0.5, color = NA) +
   scale_fill_manual(values = pal) +
-  theme_light() +
+  theme_void() +
   theme(legend.position = "None")
 
 ggsave(filename = "output/asher2007_worldmap.png", plot = p_world_asher2007,  width = 30, height = 20, units = "cm", dpi = 300)
