@@ -14,16 +14,18 @@ LanguageTable <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0
 #125_salt
 #"71_tostabpierce"
 #"129_moon"
-concept <- "71_tostabpierce"
+##"1_hand"
+#"201_five"
+concept <- "125_salt"
 title_concept <- stringr::str_extract(concept, "(?<=_)\\w+") %>% 
   str_to_title()
-
+#forms_raw$Parameter_ID %>% unique()
 forms_raw <- read_csv("https://github.com/lexibank/abvd/raw/79a8979e6064e0a0dfce53e2ccb41b32742784c5/cldf/forms.csv", 
                   show_col_types = F) %>% 
   dplyr::filter(Loan == FALSE) %>% 
   dplyr::filter(!is.na(Cognacy)) %>% 
   dplyr::filter(!str_detect(Cognacy, "\\?")) %>% 
-  dplyr::select(Language_ID, Parameter_ID, Form, Cognacy, Value) 
+  dplyr::select(Language_ID, Parameter_ID, Form, Cognacy, Value, Loan) 
 
 #forms_raw$Parameter_ID %>% unique() %>% stringr::str_extract("(?<=_)\\w+") %>% 
 #  str_to_title()
