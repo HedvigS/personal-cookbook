@@ -2,8 +2,8 @@ library(tidyverse, quietly = TRUE, warn.conflicts = FALSE, verbose = FALSE)
 library(FamilyRank)
 library(ggpubr)
 
-dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f")
-light_colors <- c("pink", "lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5")
+dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f", "#0A5231")
+light_colors <- c("pink", "lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5", "#2B8A5F","#51CF96")
 
 point1_pos <- c(55, 57, 60)
 point2_pos <- c(64, 70, 72)
