@@ -58,3 +58,46 @@ glottolog_df_with_AUTOTYP <- df_matched_up %>%
 
 glottolog_df_with_AUTOTYP %>% 
   write_tsv("output/output_tables/glottolog_AUTOTYP_areas.tsv")
+
+
+
+## More hedvig version for Macroareas in Glottolog
+
+library(dplyr)
+library(reshape2)
+library(tibble)
+
+#getting glottolog 5.2.1 tables
+LanguageTable <- read.delim("https://raw.githubusercontent.com/glottolog/glottolog-cldf/refs/tags/v5.2.1/cldf/languages.csv", sep = ",")
+
+lgs_with_known_area <-  LanguageTable%>% 
+  dplyr::filter(!is.na("Macroarea")) |> 
+  dplyr::filter(Macroarea != "") %>% 
+  tibble::column_to_rownames("Glottocode") %>% 
+  dplyr::select(Longitude, Latitude) 
+as.matrix()
+
+lgs_with_unknown_area <-  LanguageTable%>% 
+  dplyr::filter(!is.na(Longitude)) |> 
+  dplyr::filter(is.na("Macroarea")| Macroarea == "") %>% 
+  tibble::column_to_rownames("Glottocode") %>% 
+  dplyr::select(Longitude, Latitude) 
+as.matrix()
+
+# For missing, find area of closest langauge
+atDist <- fields::rdist.earth(lgs_with_known_area,lgs_with_unknown_area, miles = F)
+
+rownames(atDist) <- rownames(lgs_with_known_area)
+colnames(atDist) <- rownames(lgs_with_unknown_area)
+
+atDist_long <- atDist |> 
+  reshape2::melt() 
+
+atDist_long |> 
+  group_by(Var2) |> 
+  slice_min(value, n=1) |> 
+  left_join(dplyr::select(LanguageTable, Var1 = Glottocode, Macroarea)) |> 
+  left_join(dplyr::select(LanguageTable, Var2 = Glottocode, Countries)) |> 
+  dplyr::group_by(Var2) |> 
+  summarise(Macroarea = paste0(unique(Macroarea), collapse = ";"), 
+            Countries = paste0(unique(Countries), collapse = ";")) |> write.csv("isolates_macroareas.csv")
