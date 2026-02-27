@@ -1,19 +1,28 @@
 library(tidyverse, quietly = TRUE, warn.conflicts = FALSE, verbose = FALSE)
-library(FamilyRank)
 library(ggpubr)
 
-dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f", "#0A5231")
-light_colors <- c("pink", "lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5", "#2B8A5F","#51CF96")
+dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f"#, "#0A5231"
+                 )
+light_colors <- c("pink", "lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5"
+                  #, "#2B8A5F","#51CF96"
+                  )
 
 point1_pos <- c(55, 57, 60)
 point2_pos <- c(64, 70, 72)
 point3_pos <- c(20, 24, 30)
 
+rbinorm_h <- function(n, mean1, mean2, sd1, sd2, prop) {
+  z <- rbinom(n, size = 1, prob = prop)
+  rnorm(n,
+        mean = ifelse(z == 1, mean1, mean2),
+        sd   = ifelse(z == 1, sd1,  sd2))
+}
+
 good_plot <- function(){
 
-df <- data.frame(var1 = c(0,0,1, FamilyRank::rbinorm(n = 96, mean1 = 20, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
-                 var2 = c(0,0,1, FamilyRank::rbinorm(n = 96, mean1 = 25, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
-                 var3 = c(0,0,1, FamilyRank::rbinorm(n = 96, mean1 = 18, mean2 = 70, sd1 = 15, sd2 = 5, prop = 0.7), 100),
+df <- data.frame(var1 = c(0,0,1, rbinorm_h(n = 96, mean1 = 20, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
+                 var2 = c(0,0,1, rbinorm_h(n = 96, mean1 = 25, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
+                 var3 = c(0,0,1, rbinorm_h(n = 96, mean1 = 18, mean2 = 70, sd1 = 15, sd2 = 5, prop = 0.7), 100),
                  v = rep(x = "a", 100)) %>% 
   mutate(var1 = ifelse(var1 < 0, 0, var1)) %>% 
   mutate(var2 = ifelse(var2 < 0, 0, var2)) %>% 
