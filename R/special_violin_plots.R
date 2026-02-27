@@ -1,8 +1,9 @@
 library(tidyverse)
+library(reshape2)
 
 dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f"#, "#0A5231"
                  )
-light_colors <- c("pink", "lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5"
+light_colors <- c("lavenderblush", "lavender", "deeppink3", "#e6aa8e", "#855958", "#781c29", "#c98791", "#ebabb5", "#a1747a", "#e6a75a", "#f2b66d", "#efd0f5"
                   #, "#2B8A5F","#51CF96"
                   )
 
@@ -32,32 +33,32 @@ df_long <- df |>
   dplyr::select(var1, var2, v) |> 
   reshape2::melt(id.vars = "v")
 
-df_long  |> 
+p <- df_long  |> 
   ggplot() +
   geom_boxplot(aes(y = variable, x = value)) 
-ggsave("special_boxplot.png")
+ggsave("special_boxplot.png", plot = p)
 
-df_long |> 
+p <- df_long |> 
   ggplot() +
   geom_violin(aes(y = variable, x = value))
-ggsave("special_violin.png")
+ggsave("special_violin.png", plot = p)
 
-df_long |> 
+p <- df_long |> 
   ggplot() +
   ggridges::geom_density_ridges(aes(x= value, y = variable)) 
-ggsave("special_ridge.png")
+ggsave("special_ridge.png", plot = p)
 
-df_long |> 
+p <- df_long |> 
   ggplot() +
   ggridges::geom_density_ridges(aes(x= value, y = variable), quantile_lines = T, quantile_fun = mean) 
-ggsave("special_ridge_with_mean.png")
+ggsave("special_ridge_with_mean.png", plot = p)
 
-df_long |> 
+p <- df_long |> 
   ggplot() +
   ggridges::geom_density_ridges(aes(x= value, y = variable), quantile_lines = T, quantile_fun = mean, 
                                 jittered_points = TRUE,scale = 0.6,
                                 position = "raincloud") 
-ggsave("special_ridge_with_mean_and_rain.png")
+ggsave("special_ridge_with_mean_and_rain.png", plot = p)
 
 
 good_plot <- function(df = df){
@@ -130,7 +131,7 @@ p_all <- ggarrange(
    good_plot(df = df),
    good_plot(df = df)
 )
-  
+
   ggsave(plot = p_all , filename = "good_plots.png", width = 25, height = 48, dpi = 200) 
 
 
