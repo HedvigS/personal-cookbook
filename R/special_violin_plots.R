@@ -1,5 +1,4 @@
-library(tidyverse, quietly = TRUE, warn.conflicts = FALSE, verbose = FALSE)
-library(ggpubr)
+library(tidyverse)
 
 dark_colors <- c("deeppink4", "coral4", "black", "brown", "darkmagenta", "darkorchid4", "#702d0f"#, "#0A5231"
                  )
@@ -18,22 +17,21 @@ rbinorm_h <- function(n, mean1, mean2, sd1, sd2, prop) {
         sd   = ifelse(z == 1, sd1,  sd2))
 }
 
-good_plot <- function(){
-
 df <- data.frame(var1 = c(0,0,1, rbinorm_h(n = 96, mean1 = 20, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
                  var2 = c(0,0,1, rbinorm_h(n = 96, mean1 = 25, mean2 = 60, sd1 = 15, sd2 = 5, prop = 0.7), 100),
                  var3 = c(0,0,1, rbinorm_h(n = 96, mean1 = 18, mean2 = 70, sd1 = 15, sd2 = 5, prop = 0.7), 100),
-                 v = rep(x = "a", 100)) %>% 
-  mutate(var1 = ifelse(var1 < 0, 0, var1)) %>% 
-  mutate(var2 = ifelse(var2 < 0, 0, var2)) %>% 
-  mutate(var3 = ifelse(var3 < 0, 0, var3)) %>% 
-  mutate(var1 = ifelse(var1 > 100, 100, var1)) %>% 
-  mutate(var2 = ifelse(var2 > 100, 100,var2)) %>% 
-  mutate(var3 = ifelse(var3 > 100, 100, var3)) 
-  
+                 v = rep(x = "a", 100)) |> 
+  dplyr::mutate(var1 = ifelse(var1 < 0, 0, var1)) |>
+  dplyr::mutate(var2 = ifelse(var2 < 0, 0, var2)) |>
+  dplyr::mutate(var3 = ifelse(var3 < 0, 0, var3)) |>
+  dplyr::mutate(var1 = ifelse(var1 > 100, 100, var1)) |>
+  dplyr::mutate(var2 = ifelse(var2 > 100, 100,var2)) |>
+  dplyr::mutate(var3 = ifelse(var3 > 100, 100, var3)) 
 
-p <- suppressWarnings(
-  ggplot(data = df) +
+
+good_plot <- function(df = df){
+
+p <- ggplot(data = df) +
     geom_point(aes(x = "a", 
                    y = sample(point1_pos, size = 1, replace = FALSE)), 
              size = 14, 
@@ -71,19 +69,19 @@ p <- suppressWarnings(
   theme(panel.background = element_rect(fill = sample(light_colors, size = 1, replace = FALSE))) +
   ylim(c(0, 100))
 
-)
+
 }
 
 p_all <- ggarrange(
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot()),
-    suppressWarnings(good_plot())
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df),
+   good_plot(df = df)
 )
   
   
