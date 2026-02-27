@@ -28,6 +28,37 @@ df <- data.frame(var1 = c(0,0,1, rbinorm_h(n = 96, mean1 = 20, mean2 = 60, sd1 =
   dplyr::mutate(var2 = ifelse(var2 > 100, 100,var2)) |>
   dplyr::mutate(var3 = ifelse(var3 > 100, 100, var3)) 
 
+df_long <- df |>  
+  dplyr::select(var1, var2, v) |> 
+  reshape2::melt(id.vars = "v")
+
+df_long  |> 
+  ggplot() +
+  geom_boxplot(aes(y = variable, x = value)) 
+ggsave("special_boxplot.png")
+
+df_long |> 
+  ggplot() +
+  geom_violin(aes(y = variable, x = value))
+ggsave("special_violin.png")
+
+df_long |> 
+  ggplot() +
+  ggridges::geom_density_ridges(aes(x= value, y = variable)) 
+ggsave("special_ridge.png")
+
+df_long |> 
+  ggplot() +
+  ggridges::geom_density_ridges(aes(x= value, y = variable), quantile_lines = T, quantile_fun = mean) 
+ggsave("special_ridge_with_mean.png")
+
+df_long |> 
+  ggplot() +
+  ggridges::geom_density_ridges(aes(x= value, y = variable), quantile_lines = T, quantile_fun = mean, 
+                                jittered_points = TRUE,scale = 0.6,
+                                position = "raincloud") 
+ggsave("special_ridge_with_mean_and_rain.png")
+
 
 good_plot <- function(df = df){
 
