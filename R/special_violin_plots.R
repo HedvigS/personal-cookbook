@@ -32,41 +32,57 @@ df <- data.frame(var1 = c(0,0,1, rbinorm_h(n = 96, mean1 = 20, mean2 = 60, sd1 =
 good_plot <- function(df = df){
 
 p <- ggplot(data = df) +
-    geom_point(aes(x = "a", 
-                   y = sample(point1_pos, size = 1, replace = FALSE)), 
-             size = 14, 
-             shape = 21, 
-             fill = sample(dark_colors, size = 1, replace = FALSE),
-             stroke = 3,
-             alpha = 0.6,
-             color = sample(dark_colors, size = 1, replace = FALSE)) +
-  geom_point(aes(x = "a", 
-                 y = sample(point2_pos, size = 1, replace = FALSE)), 
-             size = 20, 
-             shape = 21, 
-             fill = "deeppink4",
-             stroke = 3,
-             alpha = 0.6,
-             color = sample(dark_colors, size = 1, replace = FALSE))+
-  geom_point(aes(x = "a", 
-                 y = sample(point3_pos, size = 1, replace = FALSE)), 
-             size = 40, 
-             shape = 21, 
-             fill = "black",
-             stroke = 5,
-             alpha = 0.6,
-             color = sample(dark_colors, size = 1, replace = FALSE))+
-    geom_violin(mapping = aes(y = var2, x = v), alpha = 0.3,
-              fill = sample(light_colors, size = 1, replace = FALSE), 
-              color = sample(light_colors, size = 1, replace = FALSE), linewidth = 2) +
-  geom_violin(mapping = aes(y = var1, x = v), 
-              fill = sample(light_colors, size = 1, replace = FALSE), 
-              color = sample(dark_colors, size = 1, replace = FALSE), linewidth = 3, alpha = 0.4) +
-  geom_violin(mapping = aes(y = var3, x = v), 
-              fill = sample(light_colors, size = 1, replace = FALSE), 
-              color = sample(dark_colors, size = 1, replace = FALSE), linewidth = 1, alpha = 0.2) +
-    theme_void()+
-  theme(panel.background = element_rect(fill = sample(light_colors, size = 1, replace = FALSE))) +
+  annotate("point",
+           x = "a",
+           y = sample(point1_pos, size = 1),
+           size = 14,
+           shape = 21,
+           fill = sample(dark_colors, size = 1),
+           stroke = 3,
+           alpha = 0.6,
+           color = sample(dark_colors, size = 1)) +
+  
+  annotate("point",
+           x = "a",
+           y = sample(point2_pos, size = 1),
+           size = 20,
+           shape = 21,
+           fill = "deeppink4",
+           stroke = 3,
+           alpha = 0.6,
+           color = sample(dark_colors, size = 1)) +
+  
+  annotate("point",
+           x = "a",
+           y = sample(point3_pos, size = 1),
+           size = 40,
+           shape = 21,
+           fill = "black",
+           stroke = 5,
+           alpha = 0.6,
+           color = sample(dark_colors, size = 1)) +
+  
+  geom_violin(aes(y = var2, x = v),
+              alpha = 0.3,
+              fill = sample(light_colors, size = 1),
+              color = sample(light_colors, size = 1),
+              linewidth = 2) +
+  
+  geom_violin(aes(y = var1, x = v),
+              fill = sample(light_colors, size = 1),
+              color = sample(dark_colors, size = 1),
+              linewidth = 3,
+              alpha = 0.4) +
+  
+  geom_violin(aes(y = var3, x = v),
+              fill = sample(light_colors, size = 1),
+              color = sample(dark_colors, size = 1),
+              linewidth = 1,
+              alpha = 0.2) +
+  
+  theme_void() +
+  theme(panel.background =
+          element_rect(fill = sample(light_colors, size = 1))) +
   ylim(c(0, 100))
 
 
@@ -84,8 +100,7 @@ p_all <- ggarrange(
    good_plot(df = df)
 )
   
-  
-suppressWarnings(  ggsave(plot = p_all , filename = "good_plots.png", width = 25, height = 48, dpi = 200) )
+  ggsave(plot = p_all , filename = "good_plots.png", width = 25, height = 48, dpi = 200) 
 
 
 
